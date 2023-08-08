@@ -7,7 +7,7 @@ def prepare_Beijing_dataset(args, aug_sampling_rate=None, aug_precision_rate=Non
     test_list = [x[:-9] for x in os.listdir(args.test_mask_dir) if x.find('mask.png') != -1]
     train_list, val_list = train_test_split(image_list, test_size=args.val_size, random_state=args.random_seed)
     train_dataset = ImageGPSDataset(train_list, args.sat_dir, args.mask_dir, args.gps_dir,
-                                         gps_typd=args.gps_type,
+                                         gps_typd=args.gps_type, 
                                          feature_embedding=args.feature_embedding, aug_mode=args.gps_augmentation)
     val_dataset = ImageGPSDataset(val_list, args.sat_dir, args.mask_dir, args.gps_dir,
                                        gps_typd=args.gps_type, feature_embedding=args.feature_embedding, randomize=False)

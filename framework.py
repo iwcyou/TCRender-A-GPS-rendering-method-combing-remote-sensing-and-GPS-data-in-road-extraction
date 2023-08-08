@@ -8,43 +8,43 @@ from loss import dice_bce_loss
 
 class Solver:
     def __init__(self, net, optimizer, loss=dice_bce_loss, metrics=IoU):
-        self.net = net.cuda()
+        self.net = net.cuda() #调用model.cuda()，可以将模型加载到GPU上去。但建议使用model.to(device)的方式，这样可以显示指定需要使用的计算资源，特别是有多个GPU的情况下。
         self.net = torch.nn.DataParallel(
-            self.net, device_ids=list(range(torch.cuda.device_count()))
+            self.net, device_ids=list(range(torch.cuda.device_count())) #多个显卡共同计算
         )
         self.optimizer = optimizer
         self.loss = loss()
         self.metrics = metrics()
-        self.old_lr = optimizer.param_groups[0]["lr"]
+        self.old_lr = optimizer.param_groups[0]["lr"] #？？？
 
-    def set_input(self, img_batch, mask_batch=None, img_id=None):
+    def set_input(self, img_batch, mask_batch=None, img_id=None): #输入图片
         self.img = img_batch
         self.mask = mask_batch
         self.img_id = img_id
 
     def forward(self, volatile=False):
-        self.img = Variable(self.img.cuda(), volatile=volatile)
+        self.img = Variable(self.img.cuda(), volatile=volatile) #？？？
         if self.mask is not None:
             self.mask = Variable(self.mask.cuda(), volatile=volatile)
 
-    def optimize(self):
+    def optimize(self): #优化器
         self.net.train()
         self.forward()
         self.optimizer.zero_grad()
         pred = self.net.forward(self.img)
         loss = self.loss(self.mask, pred)
-        loss.backward()
-        self.optimizer.step()
+        loss.backward() #？？
+        self.optimizer.step() #？？
         metrics = self.metrics(self.mask, pred)
         return loss.item(), metrics
 
-    def save_weights(self, path):
+    def save_weights(self, path): #保留模型参数
         torch.save(self.net.state_dict(), path)
 
-    def load_weights(self, path):
+    def load_weights(self, path): #加载模型参数
         self.net.load_state_dict(torch.load(path))
 
-    def update_lr(self, new_lr, factor=False):
+    def update_lr(self, new_lr, factor=False): #更新学习率
         if factor:
             new_lr = self.old_lr / new_lr
         for param_group in self.optimizer.param_groups:
@@ -54,43 +54,43 @@ class Solver:
         self.old_lr = new_lr
 
     def test_batch(self):
-        self.net.eval()
+        self.net.eval() #评估模式
         self.forward(volatile=True)
         pred = self.net.forward(self.img)
         loss = self.loss(self.mask, pred)
         metrics = self.metrics(self.mask, pred)
-        pred = pred.cpu().data.numpy().squeeze(1)
+        pred = pred.cpu().data.numpy().squeeze(1) #？？？
         return pred, loss.item(), metrics
 
     def pred_one_image(self, image):
         self.net.eval()
         image = image.cuda().unsqueeze(0)
         pred = self.net.forward(image)
-        return pred.cpu().data.numpy().squeeze(1).squeeze(0)
+        return pred.cpu().data.numpy().squeeze(1).squeeze(0) #？？？
 
 
 class Trainer:
     def __init__(self, *args, **kwargs):
         self.solver = Solver(*args, **kwargs)
 
-    def set_train_dl(self, dataloader):
+    def set_train_dl(self, dataloader): #装载训练集
         self.train_dl = dataloader
 
-    def set_validation_dl(self, dataloader):
+    def set_validation_dl(self, dataloader): #装载验证集
         self.validation_dl = dataloader
 
-    def set_test_dl(self, dataloader):
+    def set_test_dl(self, dataloader): #装载测试集
         self.test_dl = dataloader
 
-    def set_save_path(self, save_path):
+    def set_save_path(self, save_path): #加载参数保存路径
         self.save_path = save_path
 
     def fit_one_epoch(self, dataloader, eval=False):
-        dataloader_iter = iter(dataloader)
+        dataloader_iter = iter(dataloader) #将dataloader变成iterator
         epoch_loss = 0
         epoch_metrics = 0
         iter_num = len(dataloader_iter)
-        progress_bar = tqdm(enumerate(dataloader_iter), total=iter_num)
+        progress_bar = tqdm(enumerate(dataloader_iter), total=iter_num) #进度条
         for i, (img, mask) in progress_bar:
             self.solver.set_input(img, mask)
             if eval:
@@ -157,5 +157,3 @@ class Tester:
 
     def predict(self):
         pass
-
-

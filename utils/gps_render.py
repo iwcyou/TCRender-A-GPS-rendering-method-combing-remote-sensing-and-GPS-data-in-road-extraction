@@ -2,6 +2,7 @@ import os
 import pickle
 import pandas as pd
 import numpy as np
+np.seterr(divide='ignore',invalid='ignore')
 import cv2
 
 
@@ -68,7 +69,26 @@ class GPSDataRender(Render):
         gps = cv2.dilate(gps, np.ones((3, 3))) # 膨胀
         gps = gps[..., None] # 增加一个维度
         return gps
+    
+    # def _sparse_to_dense(self, patchedGPS, length=1024):
+    #     """log级渲染出GPS点的数量信息"""
+    #     ratio = length / 1024.
+    #     patchedGPS = patchedGPS[(0 <= patchedGPS['lat']) & (patchedGPS['lat'] < 1024) &
+    #                             (0 <= patchedGPS['lon']) & (patchedGPS['lon'] < 1024)]
+    #     y = np.array(patchedGPS['lon'] * ratio, np.int_)
+    #     x = np.array(patchedGPS['lat'] * ratio, np.int_)
 
+    #     #统计每个像素点上的GPS数量
+    #     gps_counts = np.bincount(x * length + y, minlength=length*length)
+    
+    #     # 根据GPS数量设置像素的亮度
+    #     max_count = np.max(gps_counts)
+    #     #加1是为了防止出现log(0)的情况
+    #     gps = (np.log(gps_counts + 1) / np.log(max_count + 1) * 255).reshape((length, length)).astype(np.uint8)
+
+    #     gps = cv2.dilate(gps, np.ones((3, 3))) # 膨胀
+    #     gps = gps[..., None] # 增加一个维度
+    #     return gps
 
     def _gps_augmentation(self, patchedGPS, aug_mode, length=1024):
         if "sampling" in aug_mode:

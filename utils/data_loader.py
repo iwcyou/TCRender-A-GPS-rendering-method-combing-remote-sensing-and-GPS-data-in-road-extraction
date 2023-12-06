@@ -89,6 +89,7 @@ class ImageGPSDataset(data.Dataset):
         else:
             gps_img = None
         img, mask = self._read_image_and_mask(image_id)
+        #cv2.imwrite(f'dataset/GPS_image_direct/{image_id}_gps.png', gps_img) #保存GPS图像
         img, mask = self._data_augmentation(img, mask, gps_img, self.randomize)
         img, mask = torch.Tensor(img), torch.Tensor(mask)
         return img, mask

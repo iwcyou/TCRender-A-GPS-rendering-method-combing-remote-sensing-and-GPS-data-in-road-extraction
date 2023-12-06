@@ -150,7 +150,7 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model', '-m', type=str, default='dlink34')
+    parser.add_argument('--model', '-m', type=str, default='dlink34_1d')
     parser.add_argument('--lr', '-lr', type=float, default=2e-4)
     parser.add_argument('--name', '-n', type=str, default='')
     parser.add_argument('--batch_size', '-b', type=int, default=4)
@@ -173,7 +173,7 @@ if __name__ == "__main__":
     parser.add_argument('--weight_load_path', '-L', type=str, default='')
     parser.add_argument('--val_size', '-T', type=float, default=0.1)
     parser.add_argument('--use_gpu', '-G', type=bool, default=True)
-    parser.add_argument('--gpu_ids', '-N', type=str, default='1')
+    parser.add_argument('--gpu_ids', '-N', type=str, default='2')
     parser.add_argument('--workers', '-w', type=int, default=4)
     parser.add_argument('--epochs', '-e', type=int, default=60)
     parser.add_argument('--random_seed', '-r', type=int, default=12345)

@@ -5,6 +5,7 @@ import os
 from tqdm import tqdm
 from utils.metrics import IoU
 from loss import dice_bce_loss
+from torch.utils.tensorboard import SummaryWriter
 
 class Solver:
     def __init__(self, net, optimizer, loss=dice_bce_loss, metrics=IoU):
@@ -22,10 +23,10 @@ class Solver:
         self.mask = mask_batch
         self.img_id = img_id
 
-    def forward(self, volatile=False):
-        self.img = Variable(self.img.cuda(), volatile=volatile) #？？？
+    def forward(self):
+        self.img = self.img.cuda()
         if self.mask is not None:
-            self.mask = Variable(self.mask.cuda(), volatile=volatile)
+            self.mask = self.mask.cuda()
 
     def optimize(self): #优化器
         self.net.train()
@@ -33,10 +34,10 @@ class Solver:
         self.optimizer.zero_grad()
         pred = self.net.forward(self.img)
         loss = self.loss(self.mask, pred)
-        loss.backward() #？？
-        self.optimizer.step() #？？
+        loss.backward() 
+        self.optimizer.step() 
         metrics = self.metrics(self.mask, pred)
-        return loss.item(), metrics
+        return pred, loss.item(), metrics
 
     def save_weights(self, path): #保留模型参数
         torch.save(self.net.state_dict(), path)
@@ -55,11 +56,12 @@ class Solver:
 
     def test_batch(self):
         self.net.eval() #评估模式
-        self.forward(volatile=True)
-        pred = self.net.forward(self.img)
-        loss = self.loss(self.mask, pred)
-        metrics = self.metrics(self.mask, pred)
-        pred = pred.cpu().data.numpy().squeeze(1) #？？？
+        with torch.no_grad():
+            self.forward()
+            pred = self.net.forward(self.img)
+            loss = self.loss(self.mask, pred)
+            metrics = self.metrics(self.mask, pred)
+            pred = pred.cpu().data.numpy()
         return pred, loss.item(), metrics
 
     def pred_one_image(self, image):
@@ -85,18 +87,22 @@ class Trainer:
     def set_save_path(self, save_path): #加载参数保存路径
         self.save_path = save_path
 
-    def fit_one_epoch(self, dataloader, eval=False):
+    def fit_one_epoch(self, dataloader, eval=False, writer=None):
         dataloader_iter = iter(dataloader) #将dataloader变成iterator
         epoch_loss = 0
         epoch_metrics = 0
         iter_num = len(dataloader_iter)
         progress_bar = tqdm(enumerate(dataloader_iter), total=iter_num) #进度条
         for i, (img, mask) in progress_bar:
+            # writer.add_images("sat", img[:, :3, :, :], i)
+            # writer.add_images("mask", mask, i)
             self.solver.set_input(img, mask)
             if eval:
-                _, iter_loss, iter_metrics = self.solver.test_batch()
+                pred, iter_loss, iter_metrics = self.solver.test_batch()
             else:
-                iter_loss, iter_metrics = self.solver.optimize()
+                pred, iter_loss, iter_metrics = self.solver.optimize()
+            # writer.add_images("pred", pred, i)
+            
             epoch_loss += iter_loss
             epoch_metrics += iter_metrics
             progress_bar.set_description(
@@ -107,26 +113,32 @@ class Trainer:
         return epoch_loss, epoch_metrics
 
     def fit(self, epochs, no_optim_epochs=10):
+        writer = SummaryWriter("logs")
+
         val_best_metrics = 0
-        val_best_loss = float("+inf")
+        val_best_loss = float("+inf") #无穷大
         no_optim = 0
         for epoch in range(1, epochs + 1):
             print(f"epoch {epoch}/{epochs}")
 
             print(f"training")
-            train_loss, train_metrics = self.fit_one_epoch(self.train_dl, eval=False)
+            train_loss, train_metrics = self.fit_one_epoch(self.train_dl, eval=False, writer=writer)
 
             print(f"validating")
-            val_loss, val_metrics = self.fit_one_epoch(self.validation_dl, eval=True)
+            val_loss, val_metrics = self.fit_one_epoch(self.validation_dl, eval=True, writer=writer)
 
             print(f"testing")
-            test_loss, test_metrics = self.fit_one_epoch(self.test_dl, eval=True)
+            test_loss, test_metrics = self.fit_one_epoch(self.test_dl, eval=True, writer=writer)
 
             print('epoch finished')
             print(f'train_loss: {train_loss:.4f} train_metrics: {train_metrics}')
             print(f'val_loss: {val_loss:.4f} val_metrics: {val_metrics}')
             print(f'test_loss: {test_loss:.4f} val_metrics: {test_metrics}')
             print()
+            # writer.add_scalar("train_loss", train_loss, epoch)
+            # writer.add_scalar("train_metrics", train_metrics[3], epoch)
+            # writer.add_scalar("test_loss", test_loss, epoch)
+            # writer.add_scalar("test_metrics", test_metrics[3], epoch)
 
             if val_metrics[3] > val_best_metrics:
                 val_best_metrics = val_metrics[3]
@@ -145,7 +157,9 @@ class Trainer:
                     break
                 else:
                     no_optim = 0
-                    self.solver.update_lr(5.0, factor=True)
+                    self.solver.update_lr(5.0, factor=True) #我先暂时不让它自动更新学习率
+
+        writer.close()
 
 
 class Tester:

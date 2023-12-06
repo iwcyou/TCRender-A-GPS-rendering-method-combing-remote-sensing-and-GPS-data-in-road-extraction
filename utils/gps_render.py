@@ -57,15 +57,16 @@ class GPSDataRender(Render):
 
 
     def _sparse_to_dense(self, patchedGPS, length=1024):
+        """将GPS点映射为图像"""
         gps = np.zeros((length, length, 1), np.uint8)
         ratio = length / 1024.
         patchedGPS = patchedGPS[(0 <= patchedGPS['lat']) & (patchedGPS['lat'] < 1024) &
                                 (0 <= patchedGPS['lon']) & (patchedGPS['lon'] < 1024)]
-        y = np.array(patchedGPS['lon'] * ratio, np.int)
-        x = np.array(patchedGPS['lat'] * ratio, np.int)
+        y = np.array(patchedGPS['lon'] * ratio, np.int_)
+        x = np.array(patchedGPS['lat'] * ratio, np.int_)
         gps[x, y] = 255
-        gps = cv2.dilate(gps, np.ones((3, 3)))
-        gps = gps[..., None]
+        gps = cv2.dilate(gps, np.ones((3, 3))) # 膨胀
+        gps = gps[..., None] # 增加一个维度
         return gps
 
 
@@ -105,6 +106,7 @@ class GPSDataRender(Render):
 
 
     def _feature_embedding(self, patchedGPS, length=1024):
+        """将GPS点的特征映射为图像"""
         features = self.features.split('-')
         features_embs = [] #np.zeros((length, length, len(features)), np.uint8)
         if "speed" in features:
@@ -198,6 +200,6 @@ class GPSDataRender(Render):
                     length=scaled_length)
             gps = np.concatenate([gps, gps_features_emb], 2)
         gps = cv2.resize(gps, (self.length, self.length))
-        if gps.ndim == 2:
+        if gps.ndim == 2: #如果GPS图像是2维的，就再增加一个维度
             gps = gps[..., None]
         return gps

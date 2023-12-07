@@ -113,7 +113,8 @@ class Trainer:
         return epoch_loss, epoch_metrics
 
     def fit(self, epochs, no_optim_epochs=10):
-        writer = SummaryWriter("logs")
+        # writer = SummaryWriter("logs")
+        writer = None
 
         val_best_metrics = 0
         val_best_loss = float("+inf") #无穷大
@@ -159,7 +160,7 @@ class Trainer:
                     no_optim = 0
                     self.solver.update_lr(5.0, factor=True) #我先暂时不让它自动更新学习率
 
-        writer.close()
+        # writer.close()
 
 
 class Tester:

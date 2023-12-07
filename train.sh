@@ -1,3 +1,9 @@
+#训练脚本
+python train.py \
+--model unet
+
+
+
 # #dataset_b数据集训练脚本
 # python train.py \
 # 	--model dlink34_1d \
@@ -20,12 +26,12 @@
 # --gps_dir datasets/dataset_1024/GPS/taxi
 
 
-#无人行道数据集训练脚本
-python train.py \
---model dlink34_1d \
---sat_dir datasets/dataset_nofootpath/train_val/image \
---sat_dir datasets/dataset_nofootpath/train_val/image \
---mask_dir datasets/dataset_nofootpath/train_val/mask \
---test_sat_dir datasets/dataset_nofootpath/test/image_test \
---test_mask_dir datasets/dataset_nofootpath/test/mask \
---gps_dir datasets/dataset_nofootpath/GPS/taxi
+# #无人行道数据集训练脚本
+# python train.py \
+# --model dlink34_1d \
+# --sat_dir datasets/dataset_nofootpath/train_val/image \
+# --sat_dir datasets/dataset_nofootpath/train_val/image \
+# --mask_dir datasets/dataset_nofootpath/train_val/mask \
+# --test_sat_dir datasets/dataset_nofootpath/test/image_test \
+# --test_mask_dir datasets/dataset_nofootpath/test/mask \
+# --gps_dir datasets/dataset_nofootpath/GPS/taxi

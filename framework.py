@@ -32,6 +32,7 @@ class Solver:
         self.net.train()
         self.forward()
         self.optimizer.zero_grad()
+        # print(self.img.shape)
         pred = self.net.forward(self.img)
         loss = self.loss(self.mask, pred)
         loss.backward() 

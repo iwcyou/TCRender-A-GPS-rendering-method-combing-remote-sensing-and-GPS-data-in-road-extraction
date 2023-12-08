@@ -5,7 +5,7 @@ from .basic_blocks import *
 
 
 class DinkNet34(nn.Module):
-    def __init__(self, num_classes=1, num_channels=3, encoder_1dconv=0,  decoder_1dconv=0):
+    def __init__(self, num_classes=1, num_channels=7, encoder_1dconv=0,  decoder_1dconv=0):
         super(DinkNet34, self).__init__()
         filters = [64, 128, 256, 512]
         self.num_channels = num_channels

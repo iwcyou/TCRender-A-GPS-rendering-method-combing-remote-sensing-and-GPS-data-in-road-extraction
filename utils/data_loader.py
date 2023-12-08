@@ -19,7 +19,7 @@ class ImageGPSDataset(data.Dataset):
         if gps_typd == '':
             self.gps_render = None
         elif gps_typd == 'image':
-            self.gps_render = GPSImageRender(gps_root)
+            self.gps_render = GPSImageRender(gps_root, 'png')
         elif gps_typd == 'data':
             self.gps_render = GPSDataRender(gps_root, feature_embedding, aug_mode, aug_sampling_rate, aug_precision_rate)
 

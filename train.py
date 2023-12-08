@@ -155,15 +155,15 @@ if __name__ == "__main__":
     parser.add_argument('--name', '-n', type=str, default='')
     parser.add_argument('--batch_size', '-b', type=int, default=4)
     parser.add_argument('--sat_dir', '-s', type=str,
-                        default='dataset/train_val/image')
+                        default='datasets/dataset/train_val/image')
     parser.add_argument('--mask_dir', '-M', type=str,
-                        default='dataset/train_val/mask')
+                        default='datasets/dataset/train_val/mask')
     parser.add_argument('--test_sat_dir', type=str,
-                        default='dataset/test/image_test')
+                        default='datasets/dataset/test/image_test')
     parser.add_argument('--test_mask_dir', type=str,
-                        default='dataset/test/mask')
+                        default='datasets/dataset/test/mask')
     parser.add_argument('--gps_dir', '-g', type=str,
-                        default='dataset/GPS/patch')
+                        default='datasets/dataset/GPS/patch')
     parser.add_argument('--gps_type', '-t', type=str, default='data')
     parser.add_argument('--feature_embedding', '-F', type=str, default='')
     parser.add_argument('--gps_augmentation', '-A', type=str, default='')

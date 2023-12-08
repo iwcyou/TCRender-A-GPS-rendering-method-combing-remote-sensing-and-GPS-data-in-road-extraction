@@ -20,19 +20,20 @@ class GPSImageRender(Render):
         self.ext = ext
 
     def render(self, ix, iy):
-        mid = "{0}_{1}".format(ix, iy)
+        mid = f"{iy}_{ix}"
         gps = cv2.imread(
-            os.path.join(self.gps_root, "{0}_gps.{1}".format(mid, self.ext)),
-            cv2.IMREAD_GRAYSCALE,
+            os.path.join(self.gps_root, f"{mid}_gps.{self.ext}"),
+            # cv2.IMREAD_GRAYSCALE
+            cv2.IMREAD_UNCHANGED
         )
         if gps is None:
             print(
                 "error in gps:",
                 os.path.join(
-                    self.gps_root, "{0}_gps.{1}".format(mid, self.ext)),
+                    self.gps_root, f"{mid}_gps.{self.ext}"),
             )
-        gps = cv2.resize(gps, (1024, 1024))
-        gps = np.expand_dims(gps, axis=2)
+        # gps = cv2.resize(gps, (1024, 1024))
+        # gps = np.expand_dims(gps, axis=2)
         return gps
 
 

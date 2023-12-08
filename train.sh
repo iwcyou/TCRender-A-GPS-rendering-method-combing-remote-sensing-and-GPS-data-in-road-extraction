@@ -1,6 +1,7 @@
 #训练脚本
 python train.py \
---model unet
+--model unet \
+
 
 
 

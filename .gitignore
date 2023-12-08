@@ -1,7 +1,7 @@
 /venv/
 /weights/
 /logs/
-/dataset/
+/Datasets/
 !/weights/.gitkeep
 __pycache__/
 *.pyc

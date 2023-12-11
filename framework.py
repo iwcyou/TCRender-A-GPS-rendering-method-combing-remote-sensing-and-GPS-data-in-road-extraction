@@ -113,6 +113,7 @@ class Trainer:
         epoch_metrics /= iter_num
         return epoch_loss, epoch_metrics
 
+
     def fit(self, epochs, no_optim_epochs=10):
         # writer = SummaryWriter("logs")
         writer = None

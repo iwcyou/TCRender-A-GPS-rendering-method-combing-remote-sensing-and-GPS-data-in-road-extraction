@@ -150,7 +150,7 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model', '-m', type=str, default='dlink34_1d')
+    parser.add_argument('--model', '-m', type=str, default='unet')
     parser.add_argument('--lr', '-lr', type=float, default=2e-4)
     parser.add_argument('--name', '-n', type=str, default='')
     parser.add_argument('--batch_size', '-b', type=int, default=4)
@@ -197,9 +197,12 @@ if __name__ == "__main__":
     elif args.sat_dir != "" and args.gps_dir == "":
         input_channels = "image_only"
         input_channel_num = 3
-    elif args.sat_dir != "" and args.gps_dir != "":
+    elif args.sat_dir != "" and args.gps_dir != "" and args.gps_type == "data":
         input_channels = "image_gps"
         input_channel_num = 4
+    elif args.gps_type == "image":
+        input_channels = "sat_gpsimage"
+        input_channel_num = 7
     else:
         print("[ERROR] Both input source are empty!")
         exit(1)

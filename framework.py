@@ -117,8 +117,10 @@ class Trainer:
         # writer = SummaryWriter("logs")
         writer = None
 
-        val_best_metrics = 0
-        val_best_loss = float("+inf") #无穷大
+        # val_best_metrics = 0
+        test_best_metrics = 0
+        # val_best_loss = float("+inf") #无穷大
+        test_best_loss = float("+inf") #无穷大
         no_optim = 0
         for epoch in range(1, epochs + 1):
             print(f"epoch {epoch}/{epochs}")
@@ -142,14 +144,27 @@ class Trainer:
             # writer.add_scalar("test_loss", test_loss, epoch)
             # writer.add_scalar("test_metrics", test_metrics[3], epoch)
 
-            if val_metrics[3] > val_best_metrics:
-                val_best_metrics = val_metrics[3]
+            #记录验证集的最优
+            # if val_metrics[3] > val_best_metrics:
+            #     val_best_metrics = val_metrics[3]
+            #     self.solver.save_weights(os.path.join(self.save_path,
+            #         f"epoch{epoch}_val{val_metrics[3]:.4f}_test{test_metrics[3]:.4f}.pth"))
+
+            # if val_loss < val_best_loss:
+            #     no_optim = 0
+            #     val_best_loss = val_loss
+            # else:
+            #     no_optim += 1
+
+            #记录测试集的最优
+            if test_metrics[3] > test_best_metrics:
+                test_best_metrics = test_metrics[3]
                 self.solver.save_weights(os.path.join(self.save_path,
                     f"epoch{epoch}_val{val_metrics[3]:.4f}_test{test_metrics[3]:.4f}.pth"))
 
-            if val_loss < val_best_loss:
+            if test_loss < test_best_loss:
                 no_optim = 0
-                val_best_loss = val_loss
+                test_best_loss = test_loss
             else:
                 no_optim += 1
 

@@ -59,7 +59,7 @@ class GPSDataRender(Render):
 
 
     def _sparse_to_dense(self, patchedGPS, length=1024):
-        """将GPS点映射为图像"""
+        """将GPS点直接映射为图像"""
         gps = np.zeros((length, length, 1), np.uint8)
         ratio = length / 1024.
         patchedGPS = patchedGPS[(0 <= patchedGPS['lat']) & (patchedGPS['lat'] < 1024) &

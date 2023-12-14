@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 np.seterr(divide='ignore',invalid='ignore')
 import cv2
+from .count_render import CountRender
 
 
 class Render():
@@ -40,7 +41,8 @@ class GPSImageRender(Render):
 # TODO: function comments
 
 class GPSDataRender(Render):
-    def __init__(self, cache, feature_embedding="", aug_mode="", aug_sampling_rate=None, aug_precision_rate=None):
+    def __init__(self, count_render_type, cache, feature_embedding="", aug_mode="", aug_sampling_rate=None, aug_precision_rate=None):
+        self.count_render_type = count_render_type
         self.features = feature_embedding
         self.aug_mode = aug_mode
         self.cache = cache
@@ -219,7 +221,9 @@ class GPSDataRender(Render):
         scaled_length = 1024
         if self.aug_mode != "":
             patchedGPS = self._gps_augmentation(patchedGPS, aug_mode=self.aug_mode, length=scaled_length)
-        gps = self._sparse_to_dense(patchedGPS, length=scaled_length)
+        # gps = self._sparse_to_dense(patchedGPS, length=scaled_length)
+        GpsRender = CountRender(patchedGPS, self.count_render_type)
+        gps = GpsRender._render_gps_to_image()
         if self.features != "":
             gps_features_emb = self._feature_embedding(patchedGPS,
                     length=scaled_length)

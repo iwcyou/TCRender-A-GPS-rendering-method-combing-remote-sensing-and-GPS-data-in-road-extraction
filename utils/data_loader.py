@@ -5,7 +5,7 @@ from .image_augmentation import *
 from .gps_render import GPSDataRender, GPSImageRender
 
 class ImageGPSDataset(data.Dataset):
-    def __init__(self, image_list, sat_root="", mask_root="",
+    def __init__(self, args, image_list, sat_root="", mask_root="",
                  gps_root="", sat_type="png", mask_type="png", gps_typd="data",
                  feature_embedding="", aug_mode="", randomize=True, aug_sampling_rate=None, aug_precision_rate=None):
         self.image_list = image_list
@@ -21,7 +21,7 @@ class ImageGPSDataset(data.Dataset):
         elif gps_typd == 'image':
             self.gps_render = GPSImageRender(gps_root, 'png')
         elif gps_typd == 'data':
-            self.gps_render = GPSDataRender(gps_root, feature_embedding, aug_mode, aug_sampling_rate, aug_precision_rate)
+            self.gps_render = GPSDataRender(args.count_render_type, gps_root, feature_embedding, aug_mode, aug_sampling_rate, aug_precision_rate)
 
 
     def _read_image_and_mask(self, image_id):

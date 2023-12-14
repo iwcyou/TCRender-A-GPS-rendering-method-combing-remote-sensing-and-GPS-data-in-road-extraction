@@ -165,6 +165,8 @@ if __name__ == "__main__":
     parser.add_argument('--gps_dir', '-g', type=str,
                         default='datasets/dataset/GPS/patch')
     parser.add_argument('--gps_type', '-t', type=str, default='data')
+    parser.add_argument('--gps_render_type', type=str, default='')
+    parser.add_argument('--count_render_type', type=str, default='')
     parser.add_argument('--feature_embedding', '-F', type=str, default='')
     parser.add_argument('--gps_augmentation', '-A', type=str, default='')
     parser.add_argument('--test_gps_augmentation', type=str, default='')
@@ -173,7 +175,7 @@ if __name__ == "__main__":
     parser.add_argument('--weight_load_path', '-L', type=str, default='')
     parser.add_argument('--val_size', '-T', type=float, default=0.1)
     parser.add_argument('--use_gpu', '-G', type=bool, default=True)
-    parser.add_argument('--gpu_ids', '-N', type=str, default='2')
+    parser.add_argument('--gpu_ids', '-N', type=str, default='1,2')
     parser.add_argument('--workers', '-w', type=int, default=4)
     parser.add_argument('--epochs', '-e', type=int, default=60)
     parser.add_argument('--random_seed', '-r', type=int, default=12345)
@@ -198,7 +200,7 @@ if __name__ == "__main__":
         input_channels = "image_only"
         input_channel_num = 3
     elif args.sat_dir != "" and args.gps_dir != "" and args.gps_type == "data":
-        input_channels = "image_gps"
+        input_channels = "sat_gpsdata"
         input_channel_num = 4
     elif args.gps_type == "image":
         input_channels = "sat_gpsimage"
@@ -215,7 +217,7 @@ if __name__ == "__main__":
         print("[INFO] gps embedding: ", num_embedding)
 
     WEIGHT_SAVE_DIR = os.path.join(args.weight_save_dir,
-                                   f"{args.model}_{input_channels}_{args.feature_embedding}_{args.gps_augmentation}")
+                                   f"{args.model}_{input_channels}_{args.gps_render_type}_{args.count_render_type}_{args.feature_embedding}_{args.gps_augmentation}")
     if not os.path.exists(WEIGHT_SAVE_DIR):
         os.mkdir(WEIGHT_SAVE_DIR)
 

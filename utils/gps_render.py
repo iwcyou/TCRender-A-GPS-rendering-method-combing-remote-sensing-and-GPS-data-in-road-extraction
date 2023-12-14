@@ -168,6 +168,7 @@ class GPSDataRender(Render):
                 out=np.zeros_like(feature_map), where=(count!=0))# np.nan_to_num(feature_map / count)
         return feature_map.astype(np.uint8)
 
+
     def _max_of_feature_value(self, patchedGPS, feature_name, scale_factor, length=1024):
         feature_map = np.zeros((length, length),  np.float)
         ratio = length / 1024.
@@ -182,6 +183,7 @@ class GPSDataRender(Render):
         max_vfunc = np.vectorize(maximize)
         max_vfunc(x, y, value)
         return feature_map[..., None].astype(np.uint8)
+
 
     def _aggregate_heading(self, patchedGPS, length=1024):
         feature_map = np.zeros((length, length, 2))
@@ -206,6 +208,7 @@ class GPSDataRender(Render):
         aevrage_vfunc(x, y, sin_value, cos_value)
         feature_map += 128
         return feature_map.astype(np.uint8)
+
 
     def render(self, ix, iy):
         patchedGPS = self._read_gps_pickle(ix, iy)

@@ -1,6 +1,6 @@
 /venv/
 /weights/
-/logs/
+/all_logs/
 /datasets/
 !/weights/.gitkeep
 __pycache__/

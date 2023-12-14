@@ -115,12 +115,12 @@ class Trainer:
 
 
     def fit(self, epochs, no_optim_epochs=10):
-        # writer = SummaryWriter("logs")
-        writer = None
+        writer = SummaryWriter("all_logs/logs")
+        # writer = None
 
-        # val_best_metrics = 0
+        val_best_metrics = 0
         test_best_metrics = 0
-        # val_best_loss = float("+inf") #无穷大
+        val_best_loss = float("+inf") #无穷大
         test_best_loss = float("+inf") #无穷大
         no_optim = 0
         for epoch in range(1, epochs + 1):
@@ -140,12 +140,12 @@ class Trainer:
             print(f'val_loss: {val_loss:.4f} val_metrics: {val_metrics}')
             print(f'test_loss: {test_loss:.4f} val_metrics: {test_metrics}')
             print()
-            # writer.add_scalar("train_loss", train_loss, epoch)
-            # writer.add_scalar("train_metrics", train_metrics[3], epoch)
-            # writer.add_scalar("test_loss", test_loss, epoch)
-            # writer.add_scalar("test_metrics", test_metrics[3], epoch)
+            writer.add_scalar("train_loss", train_loss, epoch)
+            writer.add_scalar("train_metrics", train_metrics[3], epoch)
+            writer.add_scalar("test_loss", test_loss, epoch)
+            writer.add_scalar("test_metrics", test_metrics[3], epoch)
 
-            #记录验证集的最优
+            # #记录验证集的最优
             # if val_metrics[3] > val_best_metrics:
             #     val_best_metrics = val_metrics[3]
             #     self.solver.save_weights(os.path.join(self.save_path,
@@ -177,7 +177,7 @@ class Trainer:
                     no_optim = 0
                     self.solver.update_lr(5.0, factor=True) #我先暂时不让它自动更新学习率
 
-        # writer.close()
+        writer.close()
 
 
 class Tester:

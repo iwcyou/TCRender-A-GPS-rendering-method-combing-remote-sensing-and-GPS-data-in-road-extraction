@@ -145,27 +145,15 @@ class Trainer:
             writer.add_scalar("test_loss", test_loss, epoch)
             writer.add_scalar("test_metrics", test_metrics[3], epoch)
 
-            # #记录验证集的最优
-            # if val_metrics[3] > val_best_metrics:
-            #     val_best_metrics = val_metrics[3]
-            #     self.solver.save_weights(os.path.join(self.save_path,
-            #         f"epoch{epoch}_val{val_metrics[3]:.4f}_test{test_metrics[3]:.4f}.pth"))
-
-            # if val_loss < val_best_loss:
-            #     no_optim = 0
-            #     val_best_loss = val_loss
-            # else:
-            #     no_optim += 1
-
-            #记录测试集的最优
-            if test_metrics[3] > test_best_metrics:
-                test_best_metrics = test_metrics[3]
+            #记录验证集的最优
+            if val_metrics[3] > val_best_metrics:
+                val_best_metrics = val_metrics[3]
                 self.solver.save_weights(os.path.join(self.save_path,
                     f"epoch{epoch}_val{val_metrics[3]:.4f}_test{test_metrics[3]:.4f}.pth"))
 
-            if test_loss < test_best_loss:
+            if val_loss < val_best_loss:
                 no_optim = 0
-                test_best_loss = test_loss
+                val_best_loss = val_loss
             else:
                 no_optim += 1
 
@@ -175,7 +163,7 @@ class Trainer:
                     break
                 else:
                     no_optim = 0
-                    self.solver.update_lr(5.0, factor=True) #我先暂时不让它自动更新学习率
+                    self.solver.update_lr(5.0, factor=True) #更新学习率
 
         writer.close()
 

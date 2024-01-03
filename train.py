@@ -59,7 +59,7 @@ def get_dataloader(args):
 def train(args):
     net = get_model(args.model, args.gps_dir != '')
     train_dl, val_dl, test_dl = get_dataloader(args)
-    optimizer = torch.optim.Adam(params=net.parameters(), lr=args.lr)
+    optimizer = torch.optim.Adam(params=net.parameters(), lr=args.lr) #优化器
     trainer = Trainer(net, optimizer)
     if args.weight_load_path != '':
         trainer.solver.load_weights(args.weight_load_path)
@@ -174,8 +174,8 @@ if __name__ == "__main__":
                         type=str, default='./weights')
     parser.add_argument('--weight_load_path', '-L', type=str, default='')
     parser.add_argument('--val_size', '-T', type=float, default=0.1)
-    parser.add_argument('--use_gpu', '-G', type=bool, default=True)
-    parser.add_argument('--gpu_ids', '-N', type=str, default='')
+    parser.add_argument('--use_gpu', '-G', type=bool, default='')
+    parser.add_argument('--gpu_ids', '-N', type=str, default='0,1,2,3')
     parser.add_argument('--workers', '-w', type=int, default=4)
     parser.add_argument('--epochs', '-e', type=int, default=60)
     parser.add_argument('--random_seed', '-r', type=int, default=12345)

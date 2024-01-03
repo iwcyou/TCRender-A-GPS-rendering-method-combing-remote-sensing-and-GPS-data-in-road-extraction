@@ -10,9 +10,9 @@ from torch.utils.tensorboard import SummaryWriter
 class Solver:
     def __init__(self, net, optimizer, loss=dice_bce_loss, metrics=IoU):
         self.net = net.cuda() #调用model.cuda()，可以将模型加载到GPU上去。但建议使用model.to(device)的方式，这样可以显示指定需要使用的计算资源，特别是有多个GPU的情况下。
-        self.net = torch.nn.DataParallel(
-            self.net, device_ids=list(range(torch.cuda.device_count())) #多个显卡共同计算
-        )
+        # self.net = torch.nn.DataParallel(
+        #     self.net, device_ids=list(range(torch.cuda.device_count()))) #多个显卡共同计算
+        self.net = torch.nn.DataParallel(self.net)
         self.optimizer = optimizer
         self.loss = loss()
         self.metrics = metrics()
@@ -140,16 +140,16 @@ class Trainer:
             print(f'val_loss: {val_loss:.4f} val_metrics: {val_metrics}')
             print(f'test_loss: {test_loss:.4f} val_metrics: {test_metrics}')
             print()
-            writer.add_scalar("train_loss", train_loss, epoch)
-            writer.add_scalar("train_metrics", train_metrics[3], epoch)
-            writer.add_scalar("test_loss", test_loss, epoch)
-            writer.add_scalar("test_metrics", test_metrics[3], epoch)
+            # writer.add_scalar("train_loss", train_loss, epoch)
+            # writer.add_scalar("train_metrics", train_metrics[3], epoch)
+            # writer.add_scalar("test_loss", test_loss, epoch)
+            # writer.add_scalar("test_metrics", test_metrics[3], epoch)
 
             #记录验证集的最优
             if val_metrics[3] > val_best_metrics:
                 val_best_metrics = val_metrics[3]
                 self.solver.save_weights(os.path.join(self.save_path,
-                    f"epoch{epoch}_val{val_metrics[3]:.4f}_test{test_metrics[3]:.4f}.pth"))
+                    f"epoch{epoch}_val{val_metrics[3]:.4f}_test{test_metrics[0]:.4f}_{test_metrics[1]:.4f}_{test_metrics[2]:.4f}_{test_metrics[3]:.4f}_{test_metrics[4]:.4f}_{test_metrics[5]:.4f}.pth"))
 
             if val_loss < val_best_loss:
                 no_optim = 0

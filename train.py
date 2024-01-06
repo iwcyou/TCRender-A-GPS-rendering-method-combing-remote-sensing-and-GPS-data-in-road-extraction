@@ -150,7 +150,7 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model', '-m', type=str, default='unet')
+    parser.add_argument('--model', '-m', type=str, default='dlink34_1d')
     parser.add_argument('--lr', '-lr', type=float, default=2e-4)
     parser.add_argument('--name', '-n', type=str, default='')
     parser.add_argument('--batch_size', '-b', type=int, default=4)
@@ -193,9 +193,12 @@ if __name__ == "__main__":
     else:
         BATCH_SIZE = args.batch_size
 
-    if args.sat_dir == "" and args.gps_dir != "":
-        input_channels = "gps_only"
+    if args.sat_dir == "" and args.gps_dir != "" and args.gps_type == "data":
+        input_channels = "gpsdata_only"
         input_channel_num = 1
+    elif args.sat_dir == "" and args.gps_dir != "" and args.gps_type == "image":
+        input_channels = "gpsimage_only"
+        input_channel_num = 4
     elif args.sat_dir != "" and args.gps_dir == "":
         input_channels = "image_only"
         input_channel_num = 3

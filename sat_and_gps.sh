@@ -69,7 +69,7 @@
 #     --epochs 100
 
 
-#image+GPSimage,tcrender
+#sat+GPSimage,tcrender
 #在gps中嵌入时间、速度、数量（log渲染）信息的数据集
 
 ts -G 1 python train.py \

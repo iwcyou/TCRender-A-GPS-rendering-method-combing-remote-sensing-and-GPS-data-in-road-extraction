@@ -200,7 +200,7 @@ if __name__ == "__main__":
         input_channels = "gpsimage_only"
         input_channel_num = 4
     elif args.sat_dir != "" and args.gps_dir == "":
-        input_channels = "image_only"
+        input_channels = "sat_only"
         input_channel_num = 3
     elif args.sat_dir != "" and args.gps_dir != "" and args.gps_type == "data":
         input_channels = "sat_gpsdata"

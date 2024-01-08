@@ -69,7 +69,7 @@
 #     --epochs 100
 
 
-#GPSdata,tcrender
+#GPSimage,tcrender
 ts -G 1 python train.py \
     --model deeplabv3+ \
     --sat_dir '' \

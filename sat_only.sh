@@ -1,37 +1,34 @@
 # 训练sun的数据集
-#resunet模型
 
-
-#GPSdata,plain
-ts -G 1 python train.py \
-    --model resunet \
-    --sat_dir '' \
-    --mask_dir datasets/dataset_time/train_val/mask \
-    --test_sat_dir '' \
-    --test_mask_dir datasets/dataset_time/test/mask \
-    --gps_dir datasets/dataset_time/GPS/patch \
-    \
-    --gps_type data \
-    --gps_render_type count \
-    --count_render_type direct \
-    --epochs 60
-
-#GPSimage,tcrender
-ts -G 1 python train.py \
-    --model resunet \
-    --sat_dir '' \
-    --mask_dir datasets/dataset_time/train_val/mask \
-    --test_sat_dir '' \
-    --test_mask_dir datasets/dataset_time/test/mask \
-    --gps_dir datasets/dataset_time/GPS/time_count_patch \
-    \
-    --gps_type image \
-    --gps_render_type time_speed_count \
-    --count_render_type log \
-    --epochs 60
 
 #sat,plain
 ts -G 1 python train.py \
+    --model deeplabv3+ \
+    --sat_dir datasets/dataset_time/train_val/image \
+    --mask_dir datasets/dataset_time/train_val/mask \
+    --test_sat_dir datasets/dataset_time/test/image_test \
+    --test_mask_dir datasets/dataset_time/test/mask \
+    --gps_dir '' \
+    \
+    --gps_type '' \
+    --gps_render_type '' \
+    --count_render_type '' \
+    --epochs 60
+
+ts -G 1 python train.py \
+    --model unet \
+    --sat_dir datasets/dataset_time/train_val/image \
+    --mask_dir datasets/dataset_time/train_val/mask \
+    --test_sat_dir datasets/dataset_time/test/image_test \
+    --test_mask_dir datasets/dataset_time/test/mask \
+    --gps_dir '' \
+    \
+    --gps_type '' \
+    --gps_render_type '' \
+    --count_render_type '' \
+    --epochs 60
+
+ts -G 2 python train.py \
     --model resunet \
     --sat_dir datasets/dataset_time/train_val/image \
     --mask_dir datasets/dataset_time/train_val/mask \
@@ -44,30 +41,41 @@ ts -G 1 python train.py \
     --count_render_type '' \
     --epochs 60
 
-#sat+GPSdata,plain
 ts -G 1 python train.py \
-    --model resunet \
+    --model linknet \
     --sat_dir datasets/dataset_time/train_val/image \
     --mask_dir datasets/dataset_time/train_val/mask \
     --test_sat_dir datasets/dataset_time/test/image_test \
     --test_mask_dir datasets/dataset_time/test/mask \
-    --gps_dir datasets/dataset_time/GPS/patch \
+    --gps_dir '' \
     \
-    --gps_type data \
-    --gps_render_type count \
-    --count_render_type direct \
+    --gps_type '' \
+    --gps_render_type '' \
+    --count_render_type '' \
     --epochs 60
 
-#sat+GPSimage,tcrender
 ts -G 1 python train.py \
-    --model resunet \
+    --model dlink34 \
     --sat_dir datasets/dataset_time/train_val/image \
     --mask_dir datasets/dataset_time/train_val/mask \
     --test_sat_dir datasets/dataset_time/test/image_test \
     --test_mask_dir datasets/dataset_time/test/mask \
-    --gps_dir datasets/dataset_time/GPS/time_count_patch \
+    --gps_dir '' \
     \
-    --gps_type image \
-    --gps_render_type time_speed_count \
-    --count_render_type log \
+    --gps_type '' \
+    --gps_render_type '' \
+    --count_render_type '' \
+    --epochs 60
+
+ts -G 1 python train.py \
+    --model dlink34_1d \
+    --sat_dir datasets/dataset_time/train_val/image \
+    --mask_dir datasets/dataset_time/train_val/mask \
+    --test_sat_dir datasets/dataset_time/test/image_test \
+    --test_mask_dir datasets/dataset_time/test/mask \
+    --gps_dir '' \
+    \
+    --gps_type '' \
+    --gps_render_type '' \
+    --count_render_type '' \
     --epochs 60

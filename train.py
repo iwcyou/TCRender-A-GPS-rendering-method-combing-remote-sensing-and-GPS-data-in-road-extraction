@@ -134,21 +134,16 @@ def predict(args):
 
     predict_dir = os.path.join(os.path.split(
         args.weight_load_path)[0], "prediction")
-    mask_dir = os.path.join(os.path.split(
-        args.weight_load_path)[0], "pre_mask")
     if not os.path.exists(predict_dir):
         os.mkdir(predict_dir)
-    if not os.path.exists(mask_dir):
-        os.mkdir(mask_dir)
 
     for i, data in enumerate(test_ds):
-        image, mask = data
+        image = data[0]
+        image_id = test_ds.image_list[i]
         pred = trainer.solver.pred_one_image(image)
         pred = ((pred) * 255.0).astype(np.uint8)
-        pred_filename = os.path.join(predict_dir, f"{i}.png")
+        pred_filename = os.path.join(predict_dir, f"{image_id}.png")
         cv2.imwrite(pred_filename, pred)
-        mask_filename = os.path.join(mask_dir, f"{i}.png")
-        cv2.imwrite(mask_filename, mask[0].numpy() * 255.0)
         print("[DONE] predicted image: ", pred_filename)
 
 

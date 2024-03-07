@@ -6,23 +6,23 @@
 ts -G 1 python train.py \
     --model dlink34 \
     --sat_dir '' \
-    --mask_dir datasets/dataset_mask7/train_val/mask \
+    --mask_dir datasets/dataset_sz_grid/train_val/mask \
     --test_sat_dir '' \
-    --test_mask_dir datasets/dataset_mask7/test/mask \
-    --gps_dir datasets/dataset_mask7/GPS/taxi \
+    --test_mask_dir datasets/dataset_sz_grid/test/mask \
+    --gps_dir datasets/dataset_sz_grid/GPS/taxi \
     \
     --gps_type data \
     --gps_render_type count \
     --count_render_type direct \
     --epochs 60
 
-#sat_only
+#sat_only,plain
 ts -G 1 python train.py \
     --model dlink34 \
-    --sat_dir datasets/dataset_mask7/train_val/image \
-    --mask_dir datasets/dataset_mask7/train_val/mask \
-    --test_sat_dir datasets/dataset_mask7/test/image_test \
-    --test_mask_dir datasets/dataset_mask7/test/mask \
+    --sat_dir datasets/dataset_sz_grid/train_val/image \
+    --mask_dir datasets/dataset_sz_grid/train_val/mask \
+    --test_sat_dir datasets/dataset_sz_grid/test/image_test \
+    --test_mask_dir datasets/dataset_sz_grid/test/mask \
     --gps_dir '' \
     \
     --gps_type '' \
@@ -30,14 +30,14 @@ ts -G 1 python train.py \
     --count_render_type '' \
     --epochs 60
 
-#sat+GPSdata
+#sat+GPSdata,plain
 ts -G 1 python train.py \
     --model dlink34 \
-    --sat_dir datasets/dataset_mask7/train_val/image \
-    --mask_dir datasets/dataset_mask7/train_val/mask \
-    --test_sat_dir datasets/dataset_mask7/test/image_test \
-    --test_mask_dir datasets/dataset_mask7/test/mask \
-    --gps_dir datasets/dataset_mask7/GPS/taxi \
+    --sat_dir datasets/dataset_sz_grid/train_val/image \
+    --mask_dir datasets/dataset_sz_grid/train_val/mask \
+    --test_sat_dir datasets/dataset_sz_grid/test/image_test \
+    --test_mask_dir datasets/dataset_sz_grid/test/mask \
+    --gps_dir datasets/dataset_sz_grid/GPS/taxi \
     \
     --gps_type data \
     --gps_render_type count \
@@ -45,29 +45,28 @@ ts -G 1 python train.py \
     --epochs 60
 
 
-
 #gps_only,TCRender
 ts -G 1 python train.py \
     --model dlink34 \
     --sat_dir '' \
-    --mask_dir datasets/dataset_mask7/train_val/mask \
+    --mask_dir datasets/dataset_sz_grid/train_val/mask \
     --test_sat_dir '' \
-    --test_mask_dir datasets/dataset_mask7/test/mask \
-    --gps_dir datasets/dataset_mask7/GPS/taxi_time_count_patch \
+    --test_mask_dir datasets/dataset_sz_grid/test/mask \
+    --gps_dir datasets/dataset_sz_grid/GPS/taxi_time_count_patch \
     \
     --gps_type image \
     --gps_render_type time_speed_count \
     --count_render_type log \
     --epochs 60
 
-#sat+GPSdata
+#sat+GPSdata,TCRender
 ts -G 1 python train.py \
     --model dlink34 \
-    --sat_dir datasets/dataset_mask7/train_val/image \
-    --mask_dir datasets/dataset_mask7/train_val/mask \
-    --test_sat_dir datasets/dataset_mask7/test/image_test \
-    --test_mask_dir datasets/dataset_mask7/test/mask \
-    --gps_dir datasets/dataset_mask7/GPS/taxi_time_count_patch \
+    --sat_dir datasets/dataset_sz_grid/train_val/image \
+    --mask_dir datasets/dataset_sz_grid/train_val/mask \
+    --test_sat_dir datasets/dataset_sz_grid/test/image_test \
+    --test_mask_dir datasets/dataset_sz_grid/test/mask \
+    --gps_dir datasets/dataset_sz_grid/GPS/taxi_time_count_patch \
     \
     --gps_type image \
     --gps_render_type time_speed_count \

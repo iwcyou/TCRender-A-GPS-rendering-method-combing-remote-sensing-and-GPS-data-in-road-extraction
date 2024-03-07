@@ -139,9 +139,10 @@ def predict(args):
 
     for i, data in enumerate(test_ds):
         image = data[0]
+        image_id = test_ds.image_list[i]
         pred = trainer.solver.pred_one_image(image)
         pred = ((pred) * 255.0).astype(np.uint8)
-        pred_filename = os.path.join(predict_dir, f"{i}.png")
+        pred_filename = os.path.join(predict_dir, f"{image_id}.png")
         cv2.imwrite(pred_filename, pred)
         print("[DONE] predicted image: ", pred_filename)
 

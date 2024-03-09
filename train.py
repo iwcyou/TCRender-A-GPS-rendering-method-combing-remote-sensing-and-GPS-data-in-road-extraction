@@ -220,6 +220,8 @@ if __name__ == "__main__":
             input_channel_num += 1
         print("[INFO] gps embedding: ", num_embedding)
 
+    if not os.path.exists(args.weight_save_dir):
+        os.mkdir(args.weight_save_dir)
     WEIGHT_SAVE_DIR = os.path.join(args.weight_save_dir,
                                    f"{args.model}_{input_channels}_{args.gps_render_type}_{args.count_render_type}_{args.feature_embedding}_{args.gps_augmentation}")
     if not os.path.exists(WEIGHT_SAVE_DIR):

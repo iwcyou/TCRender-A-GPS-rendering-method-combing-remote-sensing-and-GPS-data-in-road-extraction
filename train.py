@@ -48,11 +48,11 @@ def get_model(model_name, use_gps=True):
 def get_dataloader(args):
     train_ds, val_ds, test_ds = prepare_Beijing_dataset(args)
     train_dl = torch.utils.data.DataLoader(
-        train_ds, batch_size=BATCH_SIZE, num_workers=args.workers)
+        train_ds, batch_size=BATCH_SIZE, num_workers=args.workers, drop_last=True)
     val_dl = torch.utils.data.DataLoader(
-        val_ds, batch_size=BATCH_SIZE, num_workers=args.workers)
+        val_ds, batch_size=BATCH_SIZE, num_workers=args.workers, drop_last=True)
     test_dl = torch.utils.data.DataLoader(
-        test_ds, batch_size=BATCH_SIZE, num_workers=args.workers)
+        test_ds, batch_size=BATCH_SIZE, num_workers=args.workers, drop_last=True)
     return train_dl, val_dl, test_dl
 
 

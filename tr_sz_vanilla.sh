@@ -62,7 +62,3 @@ for w in "${weight_save_dir[@]}"; do
             --count_render_type direct
     done
 done
-
-# LTQS, GPS
-# LTQS, Satellite
-# LTQS, GPS+Satellite

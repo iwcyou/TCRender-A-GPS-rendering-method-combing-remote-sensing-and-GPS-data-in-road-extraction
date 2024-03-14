@@ -8,6 +8,7 @@ class ImageGPSDataset(data.Dataset):
     def __init__(self, args, image_list, sat_root="", mask_root="",
                  gps_root="", sat_type="png", mask_type="png", gps_typd="data",
                  feature_embedding="", aug_mode="", randomize=True, aug_sampling_rate=None, aug_precision_rate=None):
+        self.dataset_name = args.dataset_name
         self.image_list = image_list
         self.sat_root = sat_root
         self.mask_root = mask_root
@@ -39,7 +40,16 @@ class ImageGPSDataset(data.Dataset):
 
     def _render_gps_to_image(self, image_id):
         ix, iy = image_id.split('_')
-        gps_image = self.gps_render.render(int(ix), int(iy))
+        if self.dataset_name == 'bj':#两个数据集的GPS数据命名方式不同
+            x = int(ix)
+            y = int(iy)
+        elif self.dataset_name == 'sz':
+            y = int(ix)
+            x = int(iy)
+        else:
+            print("[ERROR] Unkown dataset name: ", self.dataset_name)
+            exit(1)
+        gps_image = self.gps_render.render(x, y)
         return gps_image
 
     def _concat_images(self, image1, image2):
@@ -97,4 +107,3 @@ class ImageGPSDataset(data.Dataset):
 
     def __len__(self):
         return len(self.image_list)
-

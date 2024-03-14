@@ -153,7 +153,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--model', '-m', type=str, default='dlink34')
     parser.add_argument('--lr', '-lr', type=float, default=2e-4)
-    parser.add_argument('--name', '-n', type=str, default='')
+    parser.add_argument('--dataset_name', '-n', type=str, default='bj') #数据集名称：bj、sz
     parser.add_argument('--batch_size', '-b', type=int, default=4)
     parser.add_argument('--sat_dir', '-s', type=str,
                         default='datasets/dataset/train_val/image')

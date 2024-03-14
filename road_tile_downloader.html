@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <title>自定义路网爬取</title>
+    <style>
+        html,
+        body,
+        #container {
+          width: 100%;
+          height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+    <script type="text/javascript">
+        window._AMapSecurityConfig = {
+            securityJsCode:'dbafe45f5ebfb30ef55a76be3b1d42ae', // please replace to your self securityJsCode
+        }
+    </script>
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=f80a3322884119e5000ce26fd253f70d"></script>
+    <script>
+        var map = new AMap.Map('container', {
+            resizeEnable: true, //是否监控地图容器尺寸变化
+            mapStyle: 'amap://styles/5867509f4e7004176b33f603404060b2', //style of the map
+            zoom: 18, //初始化地图层级
+            center: [113.92, 22.52] //初始化地图中心点
+        });
+        map.setFeatures("road");  // 单一种类要素显示
+        console.log('地图初始化完成');
+
+        function setCenter(lng, lat) {
+            var zoom = 18;
+            map.setZoomAndCenter(zoom, [lng, lat]); //同时设置地图层级与中心点
+            console.log(`当前中心点已设为 ${lng.toFixed(6)},${lat.toFixed(6)}`);
+        }
+
+        function wait(seconds) {
+            return new Promise(resolve => {
+                setTimeout(() => { resolve(); }, 1000 * seconds);
+            });
+        }
+
+        function saveTile(cv, lng, lat) {
+            var link = document.createElement('a');
+            link.href = cv.toDataURL('image/png');
+            link.download = `${lat.toFixed(6)}-${lng.toFixed(6)}.png`;
+            link.dispatchEvent(new MouseEvent('click'));
+        }
+
+        async function extractTiles(
+            lat_start, lat_end, lat_inc,
+            lng_start, lng_end, lng_inc
+
+        ) {
+            await wait(1);
+            var cv = document.getElementsByClassName('amap-layer')[0];
+            for (let lat = lat_start; lat < lat_end; lat += lat_inc) {
+                for (let lng = lng_start; lng < lng_end; lng += lng_inc) {
+                    setCenter(lng, lat);
+                    await wait(1);
+                    saveTile(cv, lng, lat);
+                }
+            }
+        }
+
+        window.addEventListener('load', function() {
+            // extractTiles(22.350075, 22.674848, 0.00455, 113.730469, 114.082032, 0.00904);
+            extractTiles(22.36, 22.38, 0.00455, 114.05, 114.06, 0.00904);
+
+        });
+    </script>
+</body>
+</html>

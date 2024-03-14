@@ -21,7 +21,7 @@ class GPSImageRender(Render):
         self.ext = ext
 
     def render(self, ix, iy):
-        mid = f"{iy}_{ix}"
+        mid = f"{ix}_{iy}"
         gps = cv2.imread(
             os.path.join(self.gps_root, f"{mid}_gps.{self.ext}"),
             # cv2.IMREAD_GRAYSCALE
@@ -54,7 +54,7 @@ class GPSDataRender(Render):
         print("[INFO] aug_precision_rate: ", self.aug_precision_rate)
 
     def _read_gps_pickle(self, ix, iy):
-        with open(os.path.join(self.cache, f'{iy}_{ix}_gps.pkl'), 'rb') as f:
+        with open(os.path.join(self.cache, f'{ix}_{iy}_gps.pkl'), 'rb') as f:
             patchedGPS = pickle.load(f)
 
         return patchedGPS

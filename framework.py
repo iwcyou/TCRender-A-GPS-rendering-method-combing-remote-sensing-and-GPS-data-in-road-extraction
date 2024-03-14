@@ -5,7 +5,7 @@ import os
 from tqdm import tqdm
 from utils.metrics import IoU
 from loss import dice_bce_loss
-from torch.utils.tensorboard import SummaryWriter
+# from torch.utils.tensorboard import SummaryWriter
 
 class Solver:
     def __init__(self, net, optimizer, loss=dice_bce_loss, metrics=IoU):
@@ -35,8 +35,8 @@ class Solver:
         # print(self.img.shape)
         pred = self.net.forward(self.img)
         loss = self.loss(self.mask, pred)
-        loss.backward() 
-        self.optimizer.step() 
+        loss.backward()
+        self.optimizer.step()
         metrics = self.metrics(self.mask, pred)
         return pred, loss.item(), metrics
 
@@ -103,7 +103,7 @@ class Trainer:
             else:
                 pred, iter_loss, iter_metrics = self.solver.optimize()
             # writer.add_images("pred", pred, i)
-            
+
             epoch_loss += iter_loss
             epoch_metrics += iter_metrics
             progress_bar.set_description(
@@ -115,8 +115,8 @@ class Trainer:
 
 
     def fit(self, epochs, no_optim_epochs=10):
-        writer = SummaryWriter("all_logs/logs")
-        # writer = None
+        # writer = SummaryWriter("all_logs/logs")
+        writer = None
 
         val_best_metrics = 0
         test_best_metrics = 0
@@ -165,7 +165,7 @@ class Trainer:
                     no_optim = 0
                     self.solver.update_lr(5.0, factor=True) #更新学习率
 
-        writer.close()
+        # writer.close()
 
 
 class Tester:

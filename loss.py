@@ -9,7 +9,7 @@ class dice_bce_loss(nn.Module):
         self.bce_loss = nn.BCELoss()
 
     def soft_dice_coeff(self, y_true, y_pred):
-        smooth = 1.0  # may change
+        smooth = 1.0  # 避免除数为0
         if self.batch:
             i = torch.sum(y_true)
             j = torch.sum(y_pred)

@@ -48,11 +48,11 @@ def get_model(model_name, use_gps=True):
 def get_dataloader(args):
     train_ds, val_ds, test_ds = prepare_Beijing_dataset(args)
     train_dl = torch.utils.data.DataLoader(
-        train_ds, batch_size=BATCH_SIZE, num_workers=args.workers)
+        train_ds, batch_size=BATCH_SIZE, num_workers=args.workers, drop_last=True)
     val_dl = torch.utils.data.DataLoader(
-        val_ds, batch_size=BATCH_SIZE, num_workers=args.workers)
+        val_ds, batch_size=BATCH_SIZE, num_workers=args.workers, drop_last=True)
     test_dl = torch.utils.data.DataLoader(
-        test_ds, batch_size=BATCH_SIZE, num_workers=args.workers)
+        test_ds, batch_size=BATCH_SIZE, num_workers=args.workers, drop_last=True)
     return train_dl, val_dl, test_dl
 
 
@@ -220,6 +220,8 @@ if __name__ == "__main__":
             input_channel_num += 1
         print("[INFO] gps embedding: ", num_embedding)
 
+    if not os.path.exists(args.weight_save_dir):
+        os.mkdir(args.weight_save_dir)
     WEIGHT_SAVE_DIR = os.path.join(args.weight_save_dir,
                                    f"{args.model}_{input_channels}_{args.gps_render_type}_{args.count_render_type}_{args.feature_embedding}_{args.gps_augmentation}")
     if not os.path.exists(WEIGHT_SAVE_DIR):

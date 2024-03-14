@@ -27,7 +27,7 @@ python train.py \
 
 ## Beijing dataset
 
-Beijing dataset need the permission by  [Tao Sun](https://github.com/suniique/Leveraging-Crowdsourced-GPS-Data-for-Road-Extraction-from-Aerial-Imagery), you can contact via: suntao@tongji.edu.cn.
+As we do not have the permission to publish the Beijing dataset, you will need to request the dataset from [here](https://github.com/suniique/Leveraging-Crowdsourced-GPS-Data-for-Road-Extraction-from-Aerial-Imagery).
 
 ## Shenzhen dataset
 
@@ -74,62 +74,61 @@ gps_data = pickle.load(open('sz_gps_dir_speed_interval_sorted.pkl', 'rb'))
 - `speed`: Speed (in meter per minute)
 - `time`: The time stamp.
 
-The `lat`/`lon` are in the gcj02 System.  
+The `lat`/`lon` are in the gcj02 System.
 
-**Range of sampling** 
+**Range of sampling**
 
-南山区卫星图坐标范围
+Range of satellite images's coordinates in Nanshan district
 
-> wgs84坐标经纬度：
-> 左上角坐标：113.77477269727868, 22.658708423462986
-> 右下角坐标：114.01655951201688, 22.401131313831055
+> wgs84 format：\
+> Top left corner：113.77477269727868, 22.658708423462986 \
+> Lower right corner：114.01655951201688, 22.401131313831055
 
-> gcj02坐标系的web墨卡托：
-> 左上角坐标：12665921.334966816,2590450.8885846175
-> 右下角坐标：12692827.1689232    ,2559417.4551008344
+> web mercator on gcj02 format：\
+> TLC：12665921.334966816,2590450.8885846175\
+> LRC：12692827.1689232    ,2559417.4551008344
 
-南山区路网图经纬度范围
+Range of road network images's coordinates in Nanshan district
 
-> wgs84坐标经纬度：
-> 左上角坐标：113.72531536623958, 22.676333371889751640059225977739
-> 右下角坐标：114.07037282840729, 22.352754460489630359940774022261
+> wgs84 format：\
+> TLC：113.72531536623958, 22.676333371889751640059225977739\
+> LRC：114.07037282840729, 22.352754460489630359940774022261
 
-> gcj02坐标系的web墨卡托：
-> 左上角坐标：12660417.89499784  , 2592578.6326045664
-> 右下角坐标：12698827.572095804, 2553607.944832368
+> web mercator on gcj02 format：\
+> TLC：12660417.89499784  , 2592578.6326045664\
+> LRC：12698827.572095804, 2553607.944832368
 
-train(卫星图)坐标范围：4.956456081279460437192118226601e-6
+train(satellite)coordinate range：4.956456081279460437192118226601e-6
 
-> wgs84坐标经纬度：
-> 左上角坐标：113.77477269727868, 22.658708423462986
-> 右下角坐标：114.01655951201688, 22.52994959856712
+> wgs84 format：\
+> TLC：113.77477269727868, 22.658708423462986\
+> LRC：114.01655951201688, 22.52994959856712
 
-> gcj02坐标系的web墨卡托：
-> 左上角坐标：12665921.334966816, 2590450.8885846175
-> 右下角坐标：12692827.1689232    , 2574934.17184272595
+> web mercator on gcj02 format：\
+> TLC：12665921.334966816, 2590450.8885846175\
+> LRC：12692827.1689232    , 2574934.17184272595
 
-test(卫星图)坐标范围：
+test(satellite)coordiante range：
 
-> wgs84坐标经纬度：
-> 左上角坐标：113.77477269727868, 22.52994959856712
-> 右下角坐标：114.01655951201688, 22.465558186041523
+> wgs84 format：\
+> TLC：113.77477269727868, 22.52994959856712\
+> LRC：114.01655951201688, 22.465558186041523
 
-> gcj02坐标系的web墨卡托：
-> 左上角坐标：12665921.334966816, 2574934.17184272595
-> 右下角坐标：12692827.1689232    , 2567175.813471780175
+> web mercator on gcj02 format：\
+> TLC：12665921.334966816, 2574934.17184272595\
+> LRC：12692827.1689232    , 2567175.813471780175
 
-加粗版南山区路网图坐标：
+Coordinat of Nanshan road network (overbold version)：
 
-> gcj02坐标系的web墨卡托：
-> 左上角坐标：12660417.89499784  , 2592493.9833760057
-> 右下角坐标：12698658.366469823, 2553607.944832368
+> web mercator on gcj02 format：\
+> TLC：12660417.89499784  , 2592493.9833760057\
+> LRC：12698658.366469823, 2553607.944832368
 
-我们所有的数据都基于gcj02坐标系下的web mercator投影
+All of our data is based on the web mercator projection in the gcj02 coordinate system.
 
 
 ### License
 
 ![img](https://licensebuttons.net/l/by-nc-sa/3.0/88x31.png)
 
-This dataset is published under [**CC BY-NC-SA**](https://creativecommons.org/licenses/by-nc-sa/4.0/) (Attribution-NonCommercial-ShareAlike) License . Please note that it can be **ONLY** used for academic or scientific purpose. 
-
+This dataset is published under [**CC BY-NC-SA**](https://creativecommons.org/licenses/by-nc-sa/4.0/) (Attribution-NonCommercial-ShareAlike) License . Please note that it can be **ONLY** used for academic or scientific purpose.

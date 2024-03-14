@@ -4,6 +4,7 @@
 #dlink34、gps、sat、ltqs预测图像,高斯渲染
 python train.py \
     --model dlink34 \
+    --dataset_name sz \
     --sat_dir datasets/dataset_sz_grid/train_val/image \
     --mask_dir datasets/dataset_sz_grid/train_val/mask \
     --test_sat_dir datasets/dataset_sz_grid/test/image_test \
@@ -11,10 +12,10 @@ python train.py \
     --gps_dir datasets/dataset_sz_grid/GPS/taxi_gaussian_ltqs_patch \
     \
     --gps_type image \
-    --gps_render_type time_speed_count \
+    --gps_render_type gaussian_ltqs \
     --count_render_type log \
 	--eval predict \
-	--weight_load_path ./weights_sz_v1/dlink34_sat_gpsimage_gaussian_ltqs_log__/epoch53_val0.6260_test0.9428_0.6776_0.7511_0.5538_0.7096_0.0116.pth
+	--weight_load_path ./weights_sz_v3/dlink34_sat_gpsimage_gaussian_ltqs_log__/epoch60_val0.6344_test0.9420_0.6350_0.7723_0.5351_0.6937_0.0177.pth
 
 
 # #dlink34、sat、gps、plain预测图像

@@ -41,11 +41,11 @@ class ImageGPSDataset(data.Dataset):
     def _render_gps_to_image(self, image_id):
         ix, iy = image_id.split('_')
         if self.dataset_name == 'bj':#两个数据集的GPS数据命名方式不同
+            x = int(iy)
+            y = int(ix)
+        elif self.dataset_name == 'sz':
             x = int(ix)
             y = int(iy)
-        elif self.dataset_name == 'sz':
-            y = int(ix)
-            x = int(iy)
         else:
             print("[ERROR] Unkown dataset name: ", self.dataset_name)
             exit(1)

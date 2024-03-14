@@ -14,11 +14,11 @@ class IoU(nn.Module):
         input_ = (input > self.threshold).data.float() #如果像素的值大于阈值，那么这个像素就是1，否则就是0
         target_ = (target > self.threshold).data.float()
 
-        intersection = torch.clamp(input_ * target_, 0, 1) 
+        intersection = torch.clamp(input_ * target_, 0, 1)
         union = torch.clamp(input_ + target_, 0, 1)
 
         if torch.mean(intersection).lt(eps): #less than函数
-            return torch.Tensor([0., 0., 0., 0., 0., 0.])
+            return torch.Tensor([0., 0., 0., 0., 0., 0.]) #if no intersection emd is big not 0
         else:
             acc = torch.mean((input_ == target_).data.float()) #准确率
             iou = torch.mean(intersection) / torch.mean(union)
@@ -28,6 +28,6 @@ class IoU(nn.Module):
             #推土距离
             real_mask = target_.cpu().numpy().flatten()
             predicted_mask = input_.cpu().numpy().flatten()
-            emd = wasserstein_distance(real_mask, predicted_mask)
-        
+            emd = wasserstein_distance(real_mask, predicted_mask) #return error distance
+
             return torch.Tensor([acc, recall, precision, iou, f1, emd])

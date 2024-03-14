@@ -121,9 +121,37 @@ def precision_experiment(args):
         f.close()
 
 
+# def predict(args):
+#     import cv2
+#     import numpy as np
+
+#     net = get_model(args.model, args.gps_dir != '')
+#     _, _, test_ds = prepare_Beijing_dataset(args)
+#     optimizer = torch.optim.Adam(params=net.parameters(), lr=args.lr)
+#     trainer = Trainer(net, optimizer)
+#     if args.weight_load_path != '':
+#         trainer.solver.load_weights(args.weight_load_path)
+
+#     predict_dir = os.path.join(os.path.split(
+#         args.weight_load_path)[0], "prediction")
+#     if not os.path.exists(predict_dir):
+#         os.mkdir(predict_dir)
+
+#     for i, data in enumerate(test_ds):
+#         image = data[0]
+#         image_id = test_ds.image_list[i]
+#         pred = trainer.solver.pred_one_image(image)
+#         pred = ((pred) * 255.0).astype(np.uint8)
+#         pred_filename = os.path.join(predict_dir, f"{image_id}.png")
+#         cv2.imwrite(pred_filename, pred)
+#         print("[DONE] predicted image: ", pred_filename)
+
+
 def predict(args):
     import cv2
     import numpy as np
+    from scipy.stats import wasserstein_distance
+
 
     net = get_model(args.model, args.gps_dir != '')
     _, _, test_ds = prepare_Beijing_dataset(args)
@@ -137,14 +165,26 @@ def predict(args):
     if not os.path.exists(predict_dir):
         os.mkdir(predict_dir)
 
+    threshold = 0.5
+    sum_distance = 0
+    mask_path = "./datasets/dataset_sz_grid/test/mask"
     for i, data in enumerate(test_ds):
         image = data[0]
         image_id = test_ds.image_list[i]
         pred = trainer.solver.pred_one_image(image)
-        pred = ((pred) * 255.0).astype(np.uint8)
+
+        predi = ((pred) * 255.0).astype(np.uint8)
         pred_filename = os.path.join(predict_dir, f"{image_id}.png")
-        cv2.imwrite(pred_filename, pred)
+        cv2.imwrite(pred_filename, predi)
         print("[DONE] predicted image: ", pred_filename)
+
+        input = (pred > threshold).flatten() #如果像素的值大于阈值，那么这个像素就是1，否则就是0
+        mask = cv2.imread(os.path.join(mask_path, f"{image_id}_mask.png"), cv2.IMREAD_GRAYSCALE)
+        target = (mask > threshold).flatten()
+        distance = wasserstein_distance(input, target)
+        sum_distance += distance
+    average_distance = sum_distance / len(os.listdir(mask_path))
+    print(f'Average Wasserstein distance: {average_distance}')
 
 
 if __name__ == "__main__":

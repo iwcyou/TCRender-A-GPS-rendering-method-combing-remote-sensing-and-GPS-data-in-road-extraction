@@ -1,9 +1,0 @@
-./weights_sz_v1/deeplabv3+_gpsimage_only_gaussian_ltqs_log__,26.984399174534996
-./weights_sz_v1/unet_gpsimage_only_gaussian_ltqs_log__,26.975660936776983
-./weights_sz_v1/deeplabv3+_sat_gpsimage_gaussian_ltqs_log__,26.975575032622316
-./weights_sz_v1/unet_sat_gpsimage_gaussian_ltqs_log__,26.972673134748327
-./weights_sz_v1/linknet_gpsimage_only_gaussian_ltqs_log__,26.96997421009596
-./weights_sz_v1/resunet_gpsimage_only_gaussian_ltqs_log__,26.974498715511587
-./weights_sz_v1/linknet_sat_gpsimage_gaussian_ltqs_log__,26.94428450285002
-./weights_sz_v1/resunet_sat_gpsimage_gaussian_ltqs_log__,26.955561138862787
-./weights_sz_v1/dlink34_gpsimage_only_gaussian_ltqs_log__,26.969147459019062

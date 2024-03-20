@@ -65,11 +65,19 @@ class Solver:
             pred = pred.cpu().data.numpy()
         return pred, loss.item(), metrics
 
-    def pred_one_image(self, image):
+    # def pred_one_image(self, image):
+    #     self.net.eval()
+    #     image = image.cuda().unsqueeze(0)
+    #     pred = self.net.forward(image)
+    #     return pred.cpu().data.numpy().squeeze(1).squeeze(0)
+
+    def pred_one_image(self, image, mask):
+        """return pred and emd"""
         self.net.eval()
         image = image.cuda().unsqueeze(0)
         pred = self.net.forward(image)
-        return pred.cpu().data.numpy().squeeze(1).squeeze(0) #？？？
+        metrics = self.metrics(mask, pred)
+        return pred.cpu().data.numpy().squeeze(1).squeeze(0), metrics[5].item()
 
 
 class Trainer:

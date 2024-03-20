@@ -122,6 +122,7 @@ def precision_experiment(args):
 
 
 # def predict(args):
+#     """predict the test dataset and save the result to the predict_dir"""
 #     import cv2
 #     import numpy as np
 
@@ -148,43 +149,75 @@ def precision_experiment(args):
 
 
 def predict(args):
+    """predict the EMD of test dataset"""
     import cv2
     import numpy as np
-    from scipy.stats import wasserstein_distance
+    from tqdm import tqdm
 
+    import os
+    import re
+
+    # Regular expression pattern to match the epoch number
+    pattern = r'epoch(\d+)_'
+    # Initialize variables to store the maximum epoch number and corresponding filename
+    max_epoch = 0
+    max_epoch_filename = ""
+    # Iterate through filenames
+    for filename in os.listdir(WEIGHT_SAVE_DIR):
+        # Check if the filename is not "prediction"
+        if filename.endswith(".pth"):
+            # Extract epoch number
+            match = re.search(pattern, filename)
+            if match:
+                epoch_number = int(match.group(1))
+                # Update max_epoch and max_epoch_filename if the current epoch number is higher
+                if epoch_number > max_epoch:
+                    max_epoch = epoch_number
+                    max_epoch_filename = filename
+    # Print the filename with the highest epoch number
+    print("Filename with the highest epoch number:", max_epoch_filename)
 
     net = get_model(args.model, args.gps_dir != '')
     _, _, test_ds = prepare_Beijing_dataset(args)
     optimizer = torch.optim.Adam(params=net.parameters(), lr=args.lr)
     trainer = Trainer(net, optimizer)
+
     if args.weight_load_path != '':
         trainer.solver.load_weights(args.weight_load_path)
-
-    predict_dir = os.path.join(os.path.split(
-        args.weight_load_path)[0], "prediction")
+        predict_dir = os.path.join(os.path.split(args.weight_load_path)[0], "prediction")
+    else:
+        trainer.solver.load_weights(os.path.join(WEIGHT_SAVE_DIR, max_epoch_filename))
+        predict_dir = os.path.join(WEIGHT_SAVE_DIR, "prediction")
     if not os.path.exists(predict_dir):
         os.mkdir(predict_dir)
 
     threshold = 0.5
     sum_distance = 0
     mask_path = "./datasets/dataset_sz_grid/test/mask"
-    for i, data in enumerate(test_ds):
+    for i, data in tqdm(enumerate(test_ds)):
         image = data[0]
         image_id = test_ds.image_list[i]
-        pred = trainer.solver.pred_one_image(image)
-
-        predi = ((pred) * 255.0).astype(np.uint8)
-        pred_filename = os.path.join(predict_dir, f"{image_id}.png")
-        cv2.imwrite(pred_filename, predi)
-        print("[DONE] predicted image: ", pred_filename)
-
-        input = (pred > threshold).flatten() #如果像素的值大于阈值，那么这个像素就是1，否则就是0
         mask = cv2.imread(os.path.join(mask_path, f"{image_id}_mask.png"), cv2.IMREAD_GRAYSCALE)
-        target = (mask > threshold).flatten()
-        distance = wasserstein_distance(input, target)
-        sum_distance += distance
+
+        pred, emd = trainer.solver.pred_one_image(image, mask)
+        sum_distance += emd
+
+        # save the predicted image
+        pred_img = ((pred) * 255.0).astype(np.uint8)
+        pred_filename = os.path.join(predict_dir, f"{image_id}.png")
+        cv2.imwrite(pred_filename, pred_img)
+        # print("[DONE] predicted image: ", pred_filename)
+
     average_distance = sum_distance / len(os.listdir(mask_path))
-    print(f'Average Wasserstein distance: {average_distance}')
+    import csv
+    # File path to save the CSV file
+    csv_file_path = "./emd.csv"
+    # Write average_distance to CSV file
+    with open(csv_file_path, mode='a', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow([WEIGHT_SAVE_DIR, average_distance])
+
+    print(f'{WEIGHT_SAVE_DIR}: {average_distance}')
 
 
 if __name__ == "__main__":

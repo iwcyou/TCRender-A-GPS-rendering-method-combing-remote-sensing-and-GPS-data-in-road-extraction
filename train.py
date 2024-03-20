@@ -153,7 +153,6 @@ def predict(args):
     import cv2
     import numpy as np
     from tqdm import tqdm
-
     import os
     import re
 
@@ -164,7 +163,7 @@ def predict(args):
     max_epoch_filename = ""
     # Iterate through filenames
     for filename in os.listdir(WEIGHT_SAVE_DIR):
-        # Check if the filename is not "prediction"
+        # Check if the file is a model file
         if filename.endswith(".pth"):
             # Extract epoch number
             match = re.search(pattern, filename)
@@ -182,6 +181,7 @@ def predict(args):
     optimizer = torch.optim.Adam(params=net.parameters(), lr=args.lr)
     trainer = Trainer(net, optimizer)
 
+    # Load the weights from the file with the highest epoch number
     if args.weight_load_path != '':
         trainer.solver.load_weights(args.weight_load_path)
         predict_dir = os.path.join(os.path.split(args.weight_load_path)[0], "prediction")
@@ -191,7 +191,6 @@ def predict(args):
     if not os.path.exists(predict_dir):
         os.mkdir(predict_dir)
 
-    threshold = 0.5
     sum_distance = 0
     mask_path = "./datasets/dataset_sz_grid/test/mask"
     for i, data in tqdm(enumerate(test_ds)):
@@ -209,6 +208,7 @@ def predict(args):
         # print("[DONE] predicted image: ", pred_filename)
 
     average_distance = sum_distance / len(os.listdir(mask_path))
+
     import csv
     # File path to save the CSV file
     csv_file_path = "./emd.csv"

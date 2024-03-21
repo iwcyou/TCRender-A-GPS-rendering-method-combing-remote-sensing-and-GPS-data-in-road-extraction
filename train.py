@@ -250,7 +250,7 @@ if __name__ == "__main__":
     parser.add_argument('--val_size', '-T', type=float, default=0.1)
     parser.add_argument('--use_gpu', '-G', type=bool, default='')
     parser.add_argument('--gpu_ids', '-N', type=str, default='1,2,3')
-    parser.add_argument('--workers', '-w', type=int, default=4)
+    parser.add_argument('--workers', '-w', type=int, default=8)
     parser.add_argument('--epochs', '-e', type=int, default=60)
     parser.add_argument('--random_seed', '-r', type=int, default=12345)
     parser.add_argument('--eval', '-E', type=str, default="")

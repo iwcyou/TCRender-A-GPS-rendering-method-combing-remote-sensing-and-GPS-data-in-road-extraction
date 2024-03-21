@@ -7,12 +7,12 @@ weight_save_dir=(
     "./weights_sz_v3"
 )
 models=(
-    "deeplabv3+"
     "unet"
     "resunet"
+    "deeplabv3+"
     "linknet"
-    "dlink34"
     "dlink34_1d"
+    "dlink34"
 )
 for w in "${weight_save_dir[@]}"; do
     for m in "${models[@]}"; do

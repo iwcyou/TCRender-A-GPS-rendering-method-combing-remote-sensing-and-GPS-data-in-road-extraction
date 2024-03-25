@@ -43,7 +43,8 @@ n = len(os.listdir(mask_path))
 
 
 folder_path = f"./{args.weight_dir}/{args.model}{args.method}"
-pred_path = os.path.join(folder_path, "prediction")
+print(f"Calculating Wasserstein distance for {folder_path}:")
+pred_path = os.path.join(folder_path, "prediction_transposed")
 iter = tqdm(os.listdir(pred_path))
 distance = 0
 for filename in iter:

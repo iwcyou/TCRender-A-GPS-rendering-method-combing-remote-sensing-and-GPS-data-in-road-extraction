@@ -2,9 +2,9 @@
 
 
 weights_dir=(
-    "./weights_sz_v1"
-    "./weights_sz_v2"
-    "./weights_sz_v3"
+    "weights_sz_v1"
+    "weights_sz_v2"
+    "weights_sz_v3"
 )
 models=(
     "unet"

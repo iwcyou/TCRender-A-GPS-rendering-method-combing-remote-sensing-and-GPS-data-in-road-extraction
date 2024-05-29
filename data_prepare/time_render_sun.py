@@ -135,7 +135,7 @@ def render_by_time(dfs):
         #         roi += gaussian_kernel_2d * v[i]
 
         gps_image[dflat, dflong] += v
-        
+
     return gps_image
 
 
@@ -165,7 +165,7 @@ def _time_render(patchedGPS):
 
     patchedGPS['time'] = patchedGPS['time'].astype(int)
 
-    sorted_dfs = GPS_sort_by_time(patchedGPS) 
+    sorted_dfs = GPS_sort_by_time(patchedGPS)
     split_dfs = split_by_time(sorted_dfs)
     gps_image_array = render_by_time(split_dfs)
 
@@ -182,8 +182,8 @@ def _time_render(patchedGPS):
     #     pickle.dump(gps_image_array2, f)
 
     #将不透明的地方的alpha通道设置为1
-    gps_image_array2[..., 3] = (gps_image_array2[..., 3] > 0).astype(np.uint8) 
-    
+    gps_image_array2[..., 3] = (gps_image_array2[..., 3] > 0).astype(np.uint8)
+
     # print(gps_image_array2.max((0, 1))) #不懂
     #将RGBA四个通道映射到255的范围内
     gps_image_array2 = gps_image_array2 * 255 + 0.5
@@ -219,7 +219,7 @@ def _speed_render(patchedGPS, length=1024):
 
     patchedGPS['time'] = patchedGPS['time'].astype(int)
 
-    sorted_dfs = GPS_sort_by_time(patchedGPS) 
+    sorted_dfs = GPS_sort_by_time(patchedGPS)
     split_dfs = split_by_time(sorted_dfs)
     gps_image_array = render_by_time(split_dfs)
 
@@ -236,7 +236,7 @@ def _speed_render(patchedGPS, length=1024):
     #     pickle.dump(gps_image_array2, f)
 
     #将不透明的地方的alpha通道设置为1
-    gps_image_array2[..., 3] = (gps_image_array2[..., 3] > 0).astype(np.uint8) 
+    gps_image_array2[..., 3] = (gps_image_array2[..., 3] > 0).astype(np.uint8)
 
     # print(gps_image_array2.max((0, 1))) #不懂
     #将RGBA四个通道映射到255的范围内
@@ -249,7 +249,7 @@ def _time_quantity_render(patchedGPS):
 
     patchedGPS['time'] = patchedGPS['time'].astype(int)
 
-    sorted_dfs = GPS_sort_by_time(patchedGPS) 
+    sorted_dfs = GPS_sort_by_time(patchedGPS)
     split_dfs = split_by_time(sorted_dfs)
     gps_image_array = render_by_time(split_dfs)
 
@@ -279,7 +279,7 @@ def _time_quantity_speed_render(patchedGPS):
 
     patchedGPS['time'] = patchedGPS['time'].astype(int)
 
-    sorted_dfs = GPS_sort_by_time(patchedGPS) 
+    sorted_dfs = GPS_sort_by_time(patchedGPS)
     split_dfs = split_by_time(sorted_dfs)
     gps_image_array = render_by_time(split_dfs)
 
@@ -318,15 +318,15 @@ if __name__ == "__main__":
 
         if not all(col in patchedGPS.columns for col in ["time", "ID", "speed"]):
             continue
-    
+
     # file_name_list = ["15_41_gps.pkl", "37_47_gps.pkl"]
     # for file_name in file_name_list:
     #     print(f"Processing {file_name}...")
     #     with open(os.path.join(path, file_name), 'rb') as f:
-    #         patchedGPS = pickle.load(f)   
+    #         patchedGPS = pickle.load(f)
 
         # #只渲染时间信息
-        # gps_image_array2 = _time_render(patchedGPS) 
+        # gps_image_array2 = _time_render(patchedGPS)
         # save_path = "Datasets/dataset_time/GPS/time_patch"
         # if not os.path.isdir(save_path):
         #     os.makedirs(save_path)
@@ -354,14 +354,14 @@ if __name__ == "__main__":
         # cv2.imwrite(os.path.join(save_path, f"{file_name[:-8]}_gps.png"), rgba_data)
 
         # #只渲染速度信息
-        # gps_image_array2 = _speed_render(patchedGPS) 
+        # gps_image_array2 = _speed_render(patchedGPS)
         # save_path = "Datasets/dataset_time/GPS/speed_patch"
         # if not os.path.isdir(save_path):
         #     os.makedirs(save_path)
         # cv2.imwrite(os.path.join(save_path, f"{file_name[:-8]}_gps.png"), gps_image_array2)
 
         #渲染时间和数量信息
-        gps_image_array2 = _time_quantity_render(patchedGPS) 
+        gps_image_array2 = _time_quantity_render(patchedGPS)
         save_path = "Datasets/dataset_time/GPS/time_quantity_patch"
         if not os.path.isdir(save_path):
             os.makedirs(save_path)

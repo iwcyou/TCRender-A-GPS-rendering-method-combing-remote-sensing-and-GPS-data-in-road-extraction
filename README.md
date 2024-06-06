@@ -124,7 +124,11 @@ Coordinat of Nanshan road network (overbold version)：
 > TLC：12660417.89499784  , 2592493.9833760057\
 > LRC：12698658.366469823, 2553607.944832368
 
-All of our data is based on the web mercator projection in the gcj02 coordinate system.
+All of our *Shenzhen* dataset is based on the web mercator projection in the gcj02 coordinate system. *Beijing* dataset is based on WGS-84 coordinate system.
+
+**Minor**
+
+The difference in `datasets/gps_data/taxi/GPS_taxi.pkl` and `datasets/gps_data/taxi/GPS_taxi_2.0.pkl` mainly is the first one`s coordinate is WGS84 and the last one is Web Mercator based on GCJ-02 coordinate.
 
 
 ### License

@@ -99,6 +99,7 @@ def render_by_time(dfs):
         n = len(dflong)
         # n = eachID_num[carid]
         # t = np.arange(n) / n * 2 * np.pi
+        #every point on a trajectory
         t = np.arange(n) / n * np.pi
 
         t1, t2 = (np.sin(t) + 1) / 2, (np.cos(t) + 1) / 2

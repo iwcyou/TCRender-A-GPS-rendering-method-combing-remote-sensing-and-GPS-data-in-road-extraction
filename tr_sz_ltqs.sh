@@ -5,6 +5,8 @@ weight_save_dir=(
     "./weights_sz_v1"
     "./weights_sz_v2"
     "./weights_sz_v3"
+    "./weights_sz_v4"
+    "./weights_sz_v5"
 )
 models=(
     "unet"

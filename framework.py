@@ -5,17 +5,21 @@ import os
 from tqdm import tqdm
 from utils.metrics import IoU
 from loss import dice_bce_loss
-# from torch.utils.tensorboard import SummaryWriter
+import wandb
+
+loss_classes={
+    "dice_bce_loss": dice_bce_loss
+}
 
 class Solver:
-    def __init__(self, net, optimizer, loss=dice_bce_loss, metrics=IoU):
+    def __init__(self, net, optimizer, loss_name, metrics=IoU, loss_weight=1.0):
         self.net = net.cuda() #调用model.cuda()，可以将模型加载到GPU上去。但建议使用model.to(device)的方式，这样可以显示指定需要使用的计算资源，特别是有多个GPU的情况下。
         # self.net = torch.nn.DataParallel(
         #     self.net, device_ids=list(range(torch.cuda.device_count()))) #多个显卡共同计算
         self.net = torch.nn.DataParallel(self.net)
         self.optimizer = optimizer
-        self.loss = loss()
-        self.metrics = metrics()
+        self.loss = loss_classes[loss_name](loss_weight = loss_weight)
+        self.metrics = metrics(threshold=0.5)
         self.old_lr = optimizer.param_groups[0]["lr"] #？？？
 
     def set_input(self, img_batch, mask_batch=None, img_id=None): #输入图片
@@ -34,11 +38,11 @@ class Solver:
         self.optimizer.zero_grad()
         # print(self.img.shape)
         pred = self.net.forward(self.img)
-        loss = self.loss(self.mask, pred)
+        loss, dice_loss, bce_loss = self.loss(self.mask, pred)
         loss.backward()
         self.optimizer.step()
         metrics = self.metrics(self.mask, pred)
-        return pred, loss.item(), metrics
+        return pred, loss.item(), metrics, dice_loss.item(), bce_loss.item()
 
     def save_weights(self, path): #保留模型参数
         torch.save(self.net.state_dict(), path)
@@ -60,10 +64,10 @@ class Solver:
         with torch.no_grad():
             self.forward()
             pred = self.net.forward(self.img)
-            loss = self.loss(self.mask, pred)
+            loss, dice_loss, bce_loss = self.loss(self.mask, pred)
             metrics = self.metrics(self.mask, pred)
             pred = pred.cpu().data.numpy()
-        return pred, loss.item(), metrics
+        return pred, loss.item(), metrics, dice_loss.item(), bce_loss.item()
 
     # def pred_one_image(self, image):
     #     self.net.eval()
@@ -99,6 +103,8 @@ class Trainer:
     def fit_one_epoch(self, dataloader, eval=False, writer=None):
         dataloader_iter = iter(dataloader) #将dataloader变成iterator
         epoch_loss = 0
+        epoch_dice_loss = 0
+        epoch_bce_loss = 0
         epoch_metrics = 0
         iter_num = len(dataloader_iter)
         progress_bar = tqdm(enumerate(dataloader_iter), total=iter_num) #进度条
@@ -107,19 +113,23 @@ class Trainer:
             # writer.add_images("mask", mask, i)
             self.solver.set_input(img, mask)
             if eval:
-                pred, iter_loss, iter_metrics = self.solver.test_batch()
+                pred, iter_loss, iter_metrics, iter_dice_loss, iter_bce_loss = self.solver.test_batch()
             else:
-                pred, iter_loss, iter_metrics = self.solver.optimize()
-            # writer.add_images("pred", pred, i)
-
+                pred, iter_loss, iter_metrics, iter_dice_loss, iter_bce_loss = self.solver.optimize()
+                if i == 1:
+                    wandb.log({"train_sat":[wandb.Image(img[2][:3])], "train_pred": [wandb.Image(pred[2])], "train_mask": [wandb.Image(mask[2])]})
             epoch_loss += iter_loss
+            epoch_dice_loss += iter_dice_loss
+            epoch_bce_loss += iter_bce_loss
             epoch_metrics += iter_metrics
             progress_bar.set_description(
                 f'iter: {i} loss: {iter_loss:.4f} metrics: {iter_metrics[3]:.4f}'
             )
         epoch_loss /= iter_num
+        epoch_dice_loss /= iter_num
+        epoch_bce_loss /= iter_num
         epoch_metrics /= iter_num
-        return epoch_loss, epoch_metrics
+        return epoch_loss, epoch_metrics, epoch_dice_loss, epoch_bce_loss
 
 
     def fit(self, epochs, no_optim_epochs=10):
@@ -135,29 +145,32 @@ class Trainer:
             print(f"epoch {epoch}/{epochs}")
 
             print(f"training")
-            train_loss, train_metrics = self.fit_one_epoch(self.train_dl, eval=False, writer=writer)
+            train_loss, train_metrics, train_dice_loss, train_bce_loss = self.fit_one_epoch(self.train_dl, eval=False, writer=writer)
 
             print(f"validating")
-            val_loss, val_metrics = self.fit_one_epoch(self.validation_dl, eval=True, writer=writer)
+            val_loss, val_metrics, val_dice_loss, val_bce_loss = self.fit_one_epoch(self.validation_dl, eval=True, writer=writer)
 
             print(f"testing")
-            test_loss, test_metrics = self.fit_one_epoch(self.test_dl, eval=True, writer=writer)
+            test_loss, test_metrics, test_dice_loss, test_bce_loss = self.fit_one_epoch(self.test_dl, eval=True, writer=writer)
 
             print('epoch finished')
             print(f'train_loss: {train_loss:.4f} train_metrics: {train_metrics}')
             print(f'val_loss: {val_loss:.4f} val_metrics: {val_metrics}')
             print(f'test_loss: {test_loss:.4f} val_metrics: {test_metrics}')
             print()
-            # writer.add_scalar("train_loss", train_loss, epoch)
-            # writer.add_scalar("train_metrics", train_metrics[3], epoch)
-            # writer.add_scalar("test_loss", test_loss, epoch)
-            # writer.add_scalar("test_metrics", test_metrics[3], epoch)
+            wandb.log({"epoch": epoch + 1,
+                       "train_loss": train_loss, "train_IoU": train_metrics[3],
+                       "val_loss": val_loss, "val_IoU": val_metrics[3],
+                       "test_loss": test_loss,
+                       "train_dice_loss": train_dice_loss, "train_bce_loss": train_bce_loss,
+                       "val_dice_loss": val_dice_loss, "val_bce_loss": val_bce_loss})
 
             #记录验证集的最优
             if val_metrics[3] > val_best_metrics:
                 val_best_metrics = val_metrics[3]
                 self.solver.save_weights(os.path.join(self.save_path,
                     f"epoch{epoch}_val{val_metrics[3]:.4f}_test{test_metrics[0]:.4f}_{test_metrics[1]:.4f}_{test_metrics[2]:.4f}_{test_metrics[3]:.4f}_{test_metrics[4]:.4f}_{test_metrics[5]:.4f}.pth"))
+                wandb.log({"test_IoU": test_metrics[3]})
 
             if val_loss < val_best_loss:
                 no_optim = 0
@@ -172,8 +185,7 @@ class Trainer:
                 else:
                     no_optim = 0
                     self.solver.update_lr(5.0, factor=True) #更新学习率
-
-        # writer.close()
+        wandb.finish()
 
 
 class Tester:

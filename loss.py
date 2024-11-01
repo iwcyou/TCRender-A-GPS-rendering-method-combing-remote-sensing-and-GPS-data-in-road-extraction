@@ -3,9 +3,10 @@ import torch.nn as nn
 
 
 class dice_bce_loss(nn.Module):
-    def __init__(self, batch=True):
+    def __init__(self, loss_weight=0, batch=True):
         super(dice_bce_loss, self).__init__()
         self.batch = batch
+        self.weight = loss_weight
         self.bce_loss = nn.BCELoss()
 
     def soft_dice_coeff(self, y_true, y_pred):
@@ -29,4 +30,4 @@ class dice_bce_loss(nn.Module):
     def __call__(self, y_true, y_pred):
         a = self.bce_loss(y_pred, y_true)
         b = self.soft_dice_loss(y_true, y_pred)
-        return a + b
+        return a + b, b, a

@@ -22,7 +22,7 @@ class ImageGPSDataset(data.Dataset):
         elif gps_typd == 'image':
             self.gps_render = GPSImageRender(gps_root, 'png')
         elif gps_typd == 'data':
-            self.gps_render = GPSDataRender(args.count_render_type, gps_root, feature_embedding, aug_mode, aug_sampling_rate, aug_precision_rate)
+            self.gps_render = GPSDataRender(args.quantity_render_type, gps_root, feature_embedding, aug_mode, aug_sampling_rate, aug_precision_rate)
 
 
     def _read_image_and_mask(self, image_id):

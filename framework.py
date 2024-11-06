@@ -69,19 +69,19 @@ class Solver:
             pred = pred.cpu().data.numpy()
         return pred, loss.item(), metrics, dice_loss.item(), bce_loss.item()
 
-    # def pred_one_image(self, image):
-    #     self.net.eval()
-    #     image = image.cuda().unsqueeze(0)
-    #     pred = self.net.forward(image)
-    #     return pred.cpu().data.numpy().squeeze(1).squeeze(0)
-
-    def pred_one_image(self, image, mask):
-        """return pred and emd"""
+    def pred_one_image(self, image):
         self.net.eval()
         image = image.cuda().unsqueeze(0)
         pred = self.net.forward(image)
-        metrics = self.metrics(mask, pred)
-        return pred.cpu().data.numpy().squeeze(1).squeeze(0), metrics[5].item()
+        return pred.cpu().data.numpy().squeeze(1).squeeze(0)
+
+    # def pred_one_image(self, image, mask):
+    #     """return pred and emd"""
+    #     self.net.eval()
+    #     image = image.cuda().unsqueeze(0)
+    #     pred = self.net.forward(image)
+    #     metrics = self.metrics(mask, pred)
+    #     return pred.cpu().data.numpy().squeeze(1).squeeze(0), metrics[5].item()
 
 
 class Trainer:
@@ -156,7 +156,7 @@ class Trainer:
             print('epoch finished')
             print(f'train_loss: {train_loss:.4f} train_metrics: {train_metrics}')
             print(f'val_loss: {val_loss:.4f} val_metrics: {val_metrics}')
-            print(f'test_loss: {test_loss:.4f} val_metrics: {test_metrics}')
+            print(f'test_loss: {test_loss:.4f} test_metrics: {test_metrics}')
             print()
             wandb.log({"epoch": epoch + 1,
                        "train_loss": train_loss, "train_IoU": train_metrics[3],

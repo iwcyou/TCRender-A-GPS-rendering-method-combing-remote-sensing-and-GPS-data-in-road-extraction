@@ -147,7 +147,8 @@ def predict(args):
     net = get_model(args.model, args.gps_dir != '')
     _, _, test_ds = prepare_Beijing_dataset(args)
     optimizer = torch.optim.Adam(params=net.parameters(), lr=args.lr)
-    trainer = Trainer(net, optimizer)
+    trainer = Trainer(net, optimizer, loss_name=args.loss, loss_weight=args.loss_weight)
+
     if args.weight_load_path != '':
         trainer.solver.load_weights(args.weight_load_path)
 
@@ -155,14 +156,15 @@ def predict(args):
     os.makedirs(predict_dir, exist_ok=True)
     predict_npy_dir = os.path.join(os.path.split(args.weight_load_path)[0], "prediction_npy")
     os.makedirs(predict_npy_dir, exist_ok=True)
+    threshold = 0.5
 
     for i, data in enumerate(test_ds):
         image = data[0]
         image_id = test_ds.image_list[i]
         pred = trainer.solver.pred_one_image(image)
         np.save(os.path.join(predict_npy_dir, f"{image_id}.npy"), pred)
-
-        pred_img = ((pred) * 255.0).astype(np.uint8)
+        pred_ = (pred > threshold).astype(float)
+        pred_img = ((pred_) * 255.0).astype(np.uint8)
         cv2.imwrite(os.path.join(predict_dir, f"{image_id}.png"), pred_img)
         print("[DONE] predicted image: ", image_id)
 

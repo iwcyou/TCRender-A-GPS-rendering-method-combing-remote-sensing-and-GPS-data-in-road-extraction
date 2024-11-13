@@ -169,7 +169,7 @@ class Trainer:
             if val_metrics[3] > val_best_metrics:
                 val_best_metrics = val_metrics[3]
                 self.solver.save_weights(os.path.join(self.save_path,
-                    f"epoch{epoch}_val{val_metrics[3]:.4f}_test{test_metrics[0]:.4f}_{test_metrics[1]:.4f}_{test_metrics[2]:.4f}_{test_metrics[3]:.4f}_{test_metrics[4]:.4f}_{test_metrics[5]:.4f}.pth"))
+                    f"epoch{epoch}_val{val_metrics[3]:.4f}_test{test_metrics[0]:.4f}_{test_metrics[1]:.4f}_{test_metrics[2]:.4f}_{test_metrics[3]:.4f}_{test_metrics[4]:.4f}.pth"))
                 wandb.log({"test_IoU": test_metrics[3]})
 
             if val_loss < val_best_loss:

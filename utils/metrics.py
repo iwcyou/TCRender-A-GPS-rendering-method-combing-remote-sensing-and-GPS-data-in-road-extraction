@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import numpy as np
-from scipy.stats import wasserstein_distance
+# from scipy.stats import wasserstein_distance
 
 
 class IoU(nn.Module):
@@ -11,59 +11,42 @@ class IoU(nn.Module):
 
     def forward(self, target, input):
         eps = 1e-10
-        input_ = (input > self.threshold).data.float() # If the value of the pixel is greater than the threshold, then the pixel is 1, otherwise it is 0.
-        target_ = (target > self.threshold).data.float()
 
-        intersection = torch.clamp(input_ * target_, 0, 1)
-        union = torch.clamp(input_ + target_, 0, 1)
+        # Apply thresholding
+        input_ = (input > self.threshold).float()  # Convert to binary: 1 if greater than threshold, else 0
+        target_ = (target > self.threshold).float()
 
-        # #EMD
-        # # Calculate the sum of all pixel values
-        # sum_of_target = np.sum(target.data.float().cpu().numpy())
-        # sum_of_input = np.sum(input.data.float().cpu().numpy())
-        # # Normalize pixel values
-        # normalized_target = target.data.float().cpu().numpy() / sum_of_target
-        # normalized_input = input.data.float().cpu().numpy() / sum_of_input
-        # # Optionally, you can convert the data type to ensure it's in floating point
-        # normalized_target = normalized_target.astype('float32')
-        # normalized_input = normalized_input.astype('float32')
+        # Calculate intersection and union
+        intersection = input_ * target_  # Element-wise multiplication for intersection
+        union = input_ + target_  # Element-wise addition for union
+        union = torch.clamp(union, 0, 1)  # Ensure union doesn't exceed 1
 
-        # emd = np.zeros(len(normalized_target))
-        # for i in range(len(normalized_target)): # every batch calculate respectively
-        #     real_target = normalized_target[i].flatten()
-        #     predicted_mask = normalized_input[i].flatten()
-        #     emd[i] = wasserstein_distance(real_target, predicted_mask)
-        # emd = np.mean(emd)
-        emd = 0
+        # Calculate metrics per image in the batch
+        intersection_sum = torch.sum(intersection, dim=(1, 2, 3))  # Sum over batch, height, and width
+        union_sum = torch.sum(union, dim=(1, 2, 3))
+        target_sum = torch.sum(target_, dim=(1, 2, 3))  # Sum over target for recall calculation
+        input_sum = torch.sum(input_, dim=(1, 2, 3))  # Sum over input for precision calculation
 
-        if torch.mean(intersection).lt(eps): #less than函数
-            return torch.Tensor([0., 0., 0., 0., 0., emd])
-        else:
-            acc = torch.mean((input_ == target_).data.float()) # accuracy
-            iou = torch.mean(intersection) / torch.mean(union)
-            recall = torch.mean(intersection) / torch.mean(target_)
-            precision = torch.mean(intersection) / torch.mean(input_)
-            f1 = 2 * recall * precision / (recall + precision) # F1-score
+        # Avoid division by zero by adding eps
+        iou = intersection_sum / (union_sum + eps)
+        recall = intersection_sum / (target_sum + eps)
+        precision = intersection_sum / (input_sum + eps)
 
-            return torch.Tensor([acc, recall, precision, iou, f1, emd])
+        # Calculate accuracy (pixel-level equality)
+        correct_pixels = torch.sum(input_ == target_, dim=(1, 2, 3)).float()
+        total_pixels = torch.numel(input_) / input_.size(0)  # Total number of pixels per image
+        acc = correct_pixels / total_pixels  # Pixel-level accuracy
 
+        # Calculate F1 score
+        f1 = 2 * recall * precision / (recall + precision + eps)
 
-    # def forward(self, target, input):
-    #     """calculate the EMD"""
-    #     # Calculate the sum of all pixel values
-    #     sum_of_target = np.sum(target)
-    #     sum_of_input = np.sum(input.data.float().cpu().numpy())
-    #     # Normalize pixel values
-    #     normalized_target = target / sum_of_target
-    #     normalized_input = input.data.float().cpu().numpy() / sum_of_input
+        # Average the results over the batch
+        acc_mean = torch.mean(acc)
+        iou_mean = torch.mean(iou)
+        recall_mean = torch.mean(recall)
+        precision_mean = torch.mean(precision)
+        f1_mean = torch.mean(f1)
 
-    #     # Optionally, you can convert the data type to ensure it's in floating point
-    #     normalized_target = normalized_target.astype('float32')
-    #     normalized_input = normalized_input.astype('float32')
+        # Return the results as a tensor
+        return torch.Tensor([acc_mean, recall_mean, precision_mean, iou_mean, f1_mean])
 
-    #     real_target = normalized_target.flatten()
-    #     predicted_mask = normalized_input.flatten()
-    #     emd = wasserstein_distance(real_target, predicted_mask)
-
-    #     return torch.Tensor([acc, recall, precision, iou, f1, emd])
-    #     # return torch.Tensor([0., 0., 0., 0., 0., emd])

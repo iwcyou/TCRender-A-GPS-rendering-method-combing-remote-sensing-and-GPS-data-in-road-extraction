@@ -4,22 +4,29 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-
         {
-            "name": "Python: Remote Attach",
-            "type": "python",
-            "request": "attach",
-            "connect": {
-                "host": "localhost",
-                "port": 5679
-            },
-            "pathMappings": [
-                {
-                    "localRoot": "${workspaceFolder}",
-                    "remoteRoot": "."
-                }
-            ],
-            "justMyCode": true
+            "name": "Python: Debug train.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/train.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--model", "dlink34",
+                "--dataset_name", "bj",
+                "--sat_dir", "../datasets/dataset_bj_time/train_val/image",
+                "--mask_dir", "../datasets/dataset_bj_time/train_val/mask",
+                "--test_sat_dir", "../datasets/dataset_bj_time/test/image_test",
+                "--test_mask_dir", "../datasets/dataset_bj_time/test/mask",
+                "--gps_dir", "../datasets/dataset_bj_time/GPS/patch",
+                "--mask_type", "png",
+                "--gps_type", "data",
+                "--gps_render_type", "count",
+                "--quantity_render_type", "direct",
+                "--epochs", "100",
+                "--wandb_group", "test_group",
+                "--wandb_notes", "debug"
+            ]
+
         }
     ]
 }

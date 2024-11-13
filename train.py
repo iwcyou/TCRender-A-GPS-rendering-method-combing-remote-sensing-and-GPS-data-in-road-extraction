@@ -70,7 +70,7 @@ def get_dataloader(args):
     val_dl = torch.utils.data.DataLoader(
         val_ds, batch_size=BATCH_SIZE, num_workers=args.workers, drop_last=True)
     test_dl = torch.utils.data.DataLoader(
-        test_ds, batch_size=BATCH_SIZE, num_workers=args.workers, drop_last=True)
+        test_ds, batch_size=1, num_workers=args.workers, drop_last=True) #batch_size=1
     return train_dl, val_dl, test_dl
 
 

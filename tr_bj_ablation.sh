@@ -60,7 +60,7 @@ for w in "${weight_save_dir[@]}"; do
                 --gps_render_type count \
                 --quantity_render_type direct \
                 --epochs 100 \
-                --wandb_group "baseline" \
+                --wandb_group "bj_baseline" \
                 --wandb_notes "set random seed to 0"
             # ltqs, GPS+Satellite, gaussian
             ts -G "${n}" python train.py \
@@ -78,7 +78,7 @@ for w in "${weight_save_dir[@]}"; do
                 --gps_render_type gaussian_ltqs \
                 --quantity_render_type log \
                 --epochs 100 \
-                --wandb_group "baseline" \
+                --wandb_group "bj_baseline" \
                 --wandb_notes "set random seed to 0"
             # filtered, ltqs, GPS+Satellite, gaussian
             ts -G "${n}" python train.py \
@@ -96,7 +96,7 @@ for w in "${weight_save_dir[@]}"; do
                 --gps_render_type filtered_gaussian_ltqs \
                 --quantity_render_type log \
                 --epochs 100 \
-                --wandb_group "baseline" \
+                --wandb_group "bj_baseline" \
                 --wandb_notes "set random seed to 0"
             # # GPS+Satellite, sdf mask
             # ts -G "${n}" python train.py \

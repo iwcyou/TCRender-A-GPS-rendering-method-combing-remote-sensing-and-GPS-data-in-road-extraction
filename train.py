@@ -330,7 +330,7 @@ if __name__ == "__main__":
 
     wandb.init(
     project = "ltqs",
-    name = f"{args.dataset_name}, {args.gps_render_type}, {args.loss}",
+    name = f"{args.dataset_name}, {args.model}, {input_channels}, {args.gps_render_type}, {args.quantity_render_type}, {args.loss}",
     group = args.wandb_group,
     notes = args.wandb_notes
     )

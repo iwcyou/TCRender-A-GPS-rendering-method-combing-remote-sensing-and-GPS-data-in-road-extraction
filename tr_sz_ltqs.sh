@@ -2,11 +2,7 @@
 # shell命令中只能用#注释
 
 weight_save_dir=(
-    "./weights_sz_v1"
-    "./weights_sz_v2"
-    "./weights_sz_v3"
-    "./weights_sz_v4"
-    "./weights_sz_v5"
+    "./weights_sz_ltqs_v1"
 )
 models=(
     "unet"
@@ -29,27 +25,33 @@ for w in "${weight_save_dir[@]}"; do
             --weight_save_dir "${w}" \
             --dataset_name sz \
             --sat_dir '' \
-            --mask_dir datasets/dataset_sz_grid/train_val/mask \
+            --mask_dir ../datasets/dataset_sz_grid/train_val/mask \
             --test_sat_dir '' \
-            --test_mask_dir datasets/dataset_sz_grid/test/mask \
-            --gps_dir datasets/dataset_sz_grid/GPS/taxi_gaussian_ltqs_patch \
+            --test_mask_dir ../datasets/dataset_sz_grid/test/mask \
+            --gps_dir ../datasets/dataset_sz_grid/GPS/taxi_gaussian_ltqs_patch \
             \
             --gps_type image \
             --gps_render_type gaussian_ltqs \
-            --count_render_type log
+            --quantity_render_type log \
+            --epochs 60 \
+            --wandb_group "sz_ltqs" \
+            --wandb_notes "sz, ltqs, GPS"
         # ltqs, GPS+Satellite
         ts -G "${n}" python train.py \
             --model "${m}" \
             --weight_save_dir "${w}" \
             --dataset_name sz \
-            --sat_dir datasets/dataset_sz_grid/train_val/image \
-            --mask_dir datasets/dataset_sz_grid/train_val/mask \
-            --test_sat_dir datasets/dataset_sz_grid/test/image_test \
-            --test_mask_dir datasets/dataset_sz_grid/test/mask \
-            --gps_dir datasets/dataset_sz_grid/GPS/taxi_gaussian_ltqs_patch \
+            --sat_dir ../datasets/dataset_sz_grid/train_val/image \
+            --mask_dir ../datasets/dataset_sz_grid/train_val/mask \
+            --test_sat_dir ../datasets/dataset_sz_grid/test/image_test \
+            --test_mask_dir ../datasets/dataset_sz_grid/test/mask \
+            --gps_dir ../datasets/dataset_sz_grid/GPS/taxi_gaussian_ltqs_patch \
             \
             --gps_type image \
             --gps_render_type gaussian_ltqs \
-            --count_render_type log
+            --quantity_render_type log \
+            --epochs 60 \
+            --wandb_group "sz_ltqs" \
+            --wandb_notes "sz, ltqs, GPS+Satellite"
     done
 done

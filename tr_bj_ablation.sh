@@ -62,42 +62,42 @@ for w in "${weight_save_dir[@]}"; do
                 --epochs 100 \
                 --wandb_group "bj_baseline" \
                 --wandb_notes "set random seed to 0"
-            # ltqs, GPS+Satellite, gaussian
-            ts -G "${n}" python train.py \
-                --model "${m}" \
-                --weight_save_dir "${w}" \
-                --dataset_name bj \
-                --sat_dir ../datasets/dataset_bj_time/train_val/image \
-                --mask_dir ../datasets/dataset_bj_time/train_val/mask \
-                --test_sat_dir ../datasets/dataset_bj_time/test/image_test \
-                --test_mask_dir ../datasets/dataset_bj_time/test/mask \
-                --gps_dir ../datasets/dataset_bj_time/GPS/gaussian_patch \
-                \
-                --mask_type png \
-                --gps_type image \
-                --gps_render_type gaussian_ltqs \
-                --quantity_render_type log \
-                --epochs 100 \
-                --wandb_group "bj_baseline" \
-                --wandb_notes "set random seed to 0"
-            # filtered, ltqs, GPS+Satellite, gaussian
-            ts -G "${n}" python train.py \
-                --model "${m}" \
-                --weight_save_dir "${w}" \
-                --dataset_name bj \
-                --sat_dir ../datasets/dataset_bj_time/train_val/image \
-                --mask_dir ../datasets/dataset_bj_time/train_val/mask \
-                --test_sat_dir ../datasets/dataset_bj_time/test/image_test \
-                --test_mask_dir ../datasets/dataset_bj_time/test/mask \
-                --gps_dir ../datasets/dataset_bj_time/GPS/filtered_time_quantity_speed_gaussian_patch \
-                \
-                --mask_type png \
-                --gps_type image \
-                --gps_render_type filtered_gaussian_ltqs \
-                --quantity_render_type log \
-                --epochs 100 \
-                --wandb_group "bj_baseline" \
-                --wandb_notes "set random seed to 0"
+            # # ltqs, GPS+Satellite, gaussian
+            # ts -G "${n}" python train.py \
+            #     --model "${m}" \
+            #     --weight_save_dir "${w}" \
+            #     --dataset_name bj \
+            #     --sat_dir ../datasets/dataset_bj_time/train_val/image \
+            #     --mask_dir ../datasets/dataset_bj_time/train_val/mask \
+            #     --test_sat_dir ../datasets/dataset_bj_time/test/image_test \
+            #     --test_mask_dir ../datasets/dataset_bj_time/test/mask \
+            #     --gps_dir ../datasets/dataset_bj_time/GPS/gaussian_patch \
+            #     \
+            #     --mask_type png \
+            #     --gps_type image \
+            #     --gps_render_type gaussian_ltqs \
+            #     --quantity_render_type log \
+            #     --epochs 100 \
+            #     --wandb_group "bj_baseline" \
+            #     --wandb_notes "set random seed to 0"
+            # # filtered, ltqs, GPS+Satellite, gaussian
+            # ts -G "${n}" python train.py \
+            #     --model "${m}" \
+            #     --weight_save_dir "${w}" \
+            #     --dataset_name bj \
+            #     --sat_dir ../datasets/dataset_bj_time/train_val/image \
+            #     --mask_dir ../datasets/dataset_bj_time/train_val/mask \
+            #     --test_sat_dir ../datasets/dataset_bj_time/test/image_test \
+            #     --test_mask_dir ../datasets/dataset_bj_time/test/mask \
+            #     --gps_dir ../datasets/dataset_bj_time/GPS/filtered_time_quantity_speed_gaussian_patch \
+            #     \
+            #     --mask_type png \
+            #     --gps_type image \
+            #     --gps_render_type filtered_gaussian_ltqs \
+            #     --quantity_render_type log \
+            #     --epochs 100 \
+            #     --wandb_group "bj_baseline" \
+            #     --wandb_notes "set random seed to 0"
             # # GPS+Satellite, sdf mask
             # ts -G "${n}" python train.py \
             #     --model "${m}" \

@@ -33,7 +33,7 @@ for w in "${weight_save_dir[@]}"; do
             --gps_type image \
             --gps_render_type gaussian_ltqs \
             --quantity_render_type log \
-            --epochs 60 \
+            --epochs 100 \
             --wandb_group "sz_ltqs" \
             --wandb_notes "sz, ltqs, GPS"
         # ltqs, GPS+Satellite
@@ -50,7 +50,7 @@ for w in "${weight_save_dir[@]}"; do
             --gps_type image \
             --gps_render_type gaussian_ltqs \
             --quantity_render_type log \
-            --epochs 60 \
+            --epochs 100 \
             --wandb_group "sz_ltqs" \
             --wandb_notes "sz, ltqs, GPS+Satellite"
     done

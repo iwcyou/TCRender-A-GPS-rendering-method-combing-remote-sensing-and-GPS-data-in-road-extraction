@@ -2,15 +2,10 @@
 # shell命令中只能用#注释
 
 weight_save_dir=(
-    "./weights_bj_ltqs_seed1234"
+    "./weights_bj_ltqs_dilation"
 )
 models=(
-    "unet"
-    "resunet"
-    "deeplabv3+"
-    "linknet"
     "dlink34_1d"
-    "dlink34"
 )
 for w in "${weight_save_dir[@]}"; do
     for m in "${models[@]}"; do

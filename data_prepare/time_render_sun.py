@@ -307,7 +307,7 @@ def _time_quantity_speed_render(patchedGPS):
 
 if __name__ == "__main__":
     """将孙论文的GPS数据按照时间进行渲染,他的数据集跟我的不太一样"""
-    path = "datasets/dataset_bj_time/GPS/patch"
+    path = "/home/fk/python_code/datasets/dataset_bj_time/GPS/patch"
     file_list = os.listdir(path)
     iterater = tqdm(file_list)
     for file_name in iterater:
@@ -345,21 +345,11 @@ if __name__ == "__main__":
         # # Reshape the image array to remove the single channel dimension
         # image_data = np.squeeze(gps_image_array2)
 
-        # # Create an RGBA image with transparency mask
-        # rgba_data = np.zeros((1024, 1024, 4), dtype=np.uint8)
-        # rgba_data[..., :3] = image_data[..., np.newaxis]
-        # rgba_data[..., 3] = np.where(image_data == 0, 0, 255) #将像素值为0的地方的alpha通道设置为0，其他地方设置为255
-        # save_path = "Datasets/dataset_time/GPS/quantity_patch"
-        # if not os.path.isdir(save_path):
-        #     os.makedirs(save_path)
-        # cv2.imwrite(os.path.join(save_path, f"{file_name[:-8]}_gps.png"), rgba_data)
-
-        #只渲染速度信息
-        gps_image_array2 = _speed_render(patchedGPS)
-        save_path = "datasets/dataset_bj_time/GPS/speed_patch"
-        if not os.path.isdir(save_path):
-            os.makedirs(save_path)
-        cv2.imwrite(os.path.join(save_path, f"{file_name[:-8]}_gps.png"), gps_image_array2)
+        # #只渲染速度信息
+        # gps_image_array2 = _speed_render(patchedGPS)
+        # save_path = "datasets/dataset_bj_time/GPS/speed_patch"
+        # os.makedirs(save_path, exist_ok=True)
+        # cv2.imwrite(os.path.join(save_path, f"{file_name[:-8]}_gps.png"), gps_image_array2)
 
         # #渲染时间和数量信息
         # gps_image_array2 = _time_quantity_render(patchedGPS)
@@ -368,5 +358,10 @@ if __name__ == "__main__":
         #     os.makedirs(save_path)
         # cv2.imwrite(os.path.join(save_path, f"{file_name[:-8]}_gps.png"), gps_image_array2)
 
+        #渲染时间、数量和速度信息
+        gps_image_array2 = _time_quantity_speed_render(patchedGPS)
+        save_path = "/home/fk/python_code/datasets/dataset_bj_time/GPS/time_quantity_speed_patch"
+        os.makedirs(save_path, exist_ok=True)
+        cv2.imwrite(os.path.join(save_path, f"{file_name[:-8]}_gps.png"), gps_image_array2)
 
     print("Done!")

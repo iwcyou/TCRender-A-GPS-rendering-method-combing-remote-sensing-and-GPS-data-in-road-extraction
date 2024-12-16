@@ -2,7 +2,7 @@
 # shell命令中只能用#注释
 
 weight_save_dir=(
-    "./weights_bj_ablation"
+    "./weights_bj_ablation_seed0"
 )
 models=(
     "dlink34_1d"
@@ -23,7 +23,79 @@ for w in "${weight_save_dir[@]}"; do
             n=1
         fi
         for delta in "${delta[@]}"; do
-            # only embedding temporal information
+            # # only embedding temporal information
+            # ts -G "${n}" python train.py \
+            #     --model "${m}" \
+            #     --weight_save_dir "${w}" \
+            #     --dataset_name bj \
+            #     --sat_dir ../datasets/dataset_bj_time/train_val/image \
+            #     --mask_dir ../datasets/dataset_bj_time/train_val/mask \
+            #     --test_sat_dir ../datasets/dataset_bj_time/test/image_test \
+            #     --test_mask_dir ../datasets/dataset_bj_time/test/mask \
+            #     --gps_dir ../datasets/dataset_bj_time/GPS/time_patch \
+            #     \
+            #     --mask_type png \
+            #     --gps_type image \
+            #     --gps_render_type time \
+            #     --quantity_render_type direct \
+            #     --epochs 100 \
+            #     --wandb_group "bj_ablation" \
+            #     --wandb_notes "only embedding temporal information"
+            # # only embedding rate-of-occurrence information
+            # ts -G "${n}" python train.py \
+            #     --model "${m}" \
+            #     --weight_save_dir "${w}" \
+            #     --dataset_name bj \
+            #     --sat_dir ../datasets/dataset_bj_time/train_val/image \
+            #     --mask_dir ../datasets/dataset_bj_time/train_val/mask \
+            #     --test_sat_dir ../datasets/dataset_bj_time/test/image_test \
+            #     --test_mask_dir ../datasets/dataset_bj_time/test/mask \
+            #     --gps_dir ../datasets/dataset_bj_time/GPS/patch \
+            #     \
+            #     --mask_type png \
+            #     --gps_type data \
+            #     --gps_render_type quantity \
+            #     --quantity_render_type log \
+            #     --epochs 100 \
+            #     --wandb_group "bj_ablation" \
+            #     --wandb_notes "only embedding rate-of-occurrence information"
+            # # # only embedding speed information
+            # ts -G "${n}" python train.py \
+            #     --model "${m}" \
+            #     --weight_save_dir "${w}" \
+            #     --dataset_name bj \
+            #     --sat_dir ../datasets/dataset_bj_time/train_val/image \
+            #     --mask_dir ../datasets/dataset_bj_time/train_val/mask \
+            #     --test_sat_dir ../datasets/dataset_bj_time/test/image_test \
+            #     --test_mask_dir ../datasets/dataset_bj_time/test/mask \
+            #     --gps_dir ../datasets/dataset_bj_time/GPS/speed_patch \
+            #     \
+            #     --mask_type png \
+            #     --gps_type image \
+            #     --gps_render_type speed \
+            #     --quantity_render_type direct \
+            #     --epochs 100 \
+            #     --wandb_group "bj_ablation" \
+            #     --wandb_notes "only embedding speed information"
+            # #embedding time and quantity information
+            # ts -G "${n}" python train.py \
+            #     --model "${m}" \
+            #     --weight_save_dir "${w}" \
+            #     --dataset_name bj \
+            #     --sat_dir ../datasets/dataset_bj_time/train_val/image \
+            #     --mask_dir ../datasets/dataset_bj_time/train_val/mask \
+            #     --test_sat_dir ../datasets/dataset_bj_time/test/image_test \
+            #     --test_mask_dir ../datasets/dataset_bj_time/test/mask \
+            #     --gps_dir ../datasets/dataset_bj_time/GPS/time_quantity_patch \
+            #     \
+            #     --mask_type png \
+            #     --gps_type image \
+            #     --gps_render_type time_quantity \
+            #     --quantity_render_type log \
+            #     --epochs 100 \
+            #     --wandb_group "bj_ablation" \
+            #     --wandb_notes "only embedding time and quantity information"
+            # embedding time, quantity and speed information
             ts -G "${n}" python train.py \
                 --model "${m}" \
                 --weight_save_dir "${w}" \
@@ -32,69 +104,15 @@ for w in "${weight_save_dir[@]}"; do
                 --mask_dir ../datasets/dataset_bj_time/train_val/mask \
                 --test_sat_dir ../datasets/dataset_bj_time/test/image_test \
                 --test_mask_dir ../datasets/dataset_bj_time/test/mask \
-                --gps_dir ../datasets/dataset_bj_time/GPS/time_patch \
+                --gps_dir ../datasets/dataset_bj_time/GPS/time_quantity_speed_patch \
                 \
                 --mask_type png \
                 --gps_type image \
-                --gps_render_type time \
-                --quantity_render_type direct \
-                --epochs 100 \
-                --wandb_group "bj_ablation" \
-                --wandb_notes "only embedding temporal information"
-            # only embedding rate-of-occurrence information
-            ts -G "${n}" python train.py \
-                --model "${m}" \
-                --weight_save_dir "${w}" \
-                --dataset_name bj \
-                --sat_dir ../datasets/dataset_bj_time/train_val/image \
-                --mask_dir ../datasets/dataset_bj_time/train_val/mask \
-                --test_sat_dir ../datasets/dataset_bj_time/test/image_test \
-                --test_mask_dir ../datasets/dataset_bj_time/test/mask \
-                --gps_dir ../datasets/dataset_bj_time/GPS/patch \
-                \
-                --mask_type png \
-                --gps_type data \
-                --gps_render_type quantity \
+                --gps_render_type time_quantity_speed \
                 --quantity_render_type log \
                 --epochs 100 \
                 --wandb_group "bj_ablation" \
-                --wandb_notes "only embedding rate-of-occurrence information"
-            # # only embedding speed information
-            ts -G "${n}" python train.py \
-                --model "${m}" \
-                --weight_save_dir "${w}" \
-                --dataset_name bj \
-                --sat_dir ../datasets/dataset_bj_time/train_val/image \
-                --mask_dir ../datasets/dataset_bj_time/train_val/mask \
-                --test_sat_dir ../datasets/dataset_bj_time/test/image_test \
-                --test_mask_dir ../datasets/dataset_bj_time/test/mask \
-                --gps_dir ../datasets/dataset_bj_time/GPS/speed_patch \
-                \
-                --mask_type png \
-                --gps_type image \
-                --gps_render_type speed \
-                --quantity_render_type direct \
-                --epochs 100 \
-                --wandb_group "bj_ablation" \
-                --wandb_notes "only embedding speed information"
-            # # only embedding time and quantity information
-            ts -G "${n}" python train.py \
-                --model "${m}" \
-                --weight_save_dir "${w}" \
-                --dataset_name bj \
-                --sat_dir ../datasets/dataset_bj_time/train_val/image \
-                --mask_dir ../datasets/dataset_bj_time/train_val/mask \
-                --test_sat_dir ../datasets/dataset_bj_time/test/image_test \
-                --test_mask_dir ../datasets/dataset_bj_time/test/mask \
-                --gps_dir ../datasets/dataset_bj_time/GPS/time_quantity_patch \
-                \
-                --mask_type png \
-                --gps_type image \
-                --gps_render_type time_quantity \
-                --quantity_render_type log \
-                --epochs 100 \
-                --wandb_group "bj_ablation" \
-                --wandb_notes "only embedding time and quantity information"
+                --wandb_notes "embedding time, quantity and speed information"
             # # ltqs, GPS
             # ts -G "${n}" python train.py \
             #     --model "${m}" \

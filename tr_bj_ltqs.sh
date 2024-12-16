@@ -2,7 +2,7 @@
 # shell命令中只能用#注释
 
 weight_save_dir=(
-    "./weights_bj_ltqs_seed1234"
+    "./weights_bj_ltqs_seed42"
 )
 models=(
     "unet"

@@ -107,43 +107,37 @@ def render_by_time(dfs):
         # lons = np.array(lon_carid + 0.5, np.int_)
         v = np.stack([t1, t2, dspeed, np.ones_like(t1)], axis=-1)
 
-        # # 定义高斯核
-        # kernel_size = 3
-        # sigma = 1.0
-        # gaussian_kernel = cv2.getGaussianKernel(kernel_size, sigma)
-        # gaussian_kernel_2d = np.outer(gaussian_kernel, gaussian_kernel.T)
-        # #复制四份
-        # gaussian_kernel_2d = np.repeat(gaussian_kernel_2d[..., None], 4, axis=-1)
-
-        # gaussian_kernel_2d = np.ones((3, 3, 4)) #这里直接定义一个3*3的高斯核，不用cv2的高斯核
-
-        # margin = 1 #图像边缘宽度
-
-        # #乘以高斯核添加到图像上
-        # for i in range(n):
-        #     x = dflat[i]
-        #     y = dflong[i]
-
-        #     at_edge = (x <= margin or x >= width - margin or y <= margin or y >= height - margin)
-        #     #在图像边缘的点不进行高斯核的计算
-        #     if at_edge:
-        #         gps_image[x, y] += v[i]
-        #     else:
-        #         #Define the size of the region of interest (ROI)
-        #         roi_size = 3  # You can adjust this based on your requirements
-        #         # Extract the ROI around the specified pixel
-        #         roi = gps_image[x-int(roi_size//2): x+roi_size//2+1, y-int(roi_size//2): y+roi_size//2+1]
-        #         roi += gaussian_kernel_2d * v[i]
+        # 定义高斯核
+        kernel_size = 3
+        sigma = 1.0
+        gaussian_kernel = cv2.getGaussianKernel(kernel_size, sigma)
+        gaussian_kernel_2d = np.outer(gaussian_kernel, gaussian_kernel.T)
+        #复制四份
+        gaussian_kernel_2d = np.repeat(gaussian_kernel_2d[..., None], 4, axis=-1)
+        # gaussian_kernel_2d = np.ones((3, 3, 4)) #这里直接定义一个3*3的高斯核，不用cv2的高斯核, ones gaussian exp
+        margin = 1 #图像边缘宽度
+        #乘以高斯核添加到图像上
+        for i in range(n):
+            x = dflat[i]
+            y = dflong[i]
+            at_edge = (x <= margin or x >= width - margin or y <= margin or y >= height - margin)
+            #在图像边缘的点不进行高斯核的计算
+            if at_edge:
+                gps_image[x, y] += v[i]
+            else:
+                #Define the size of the region of interest (ROI)
+                roi_size = 3  # You can adjust this based on your requirements
+                # Extract the ROI around the specified pixel
+                roi = gps_image[x-int(roi_size//2): x+roi_size//2+1, y-int(roi_size//2): y+roi_size//2+1]
+                roi += gaussian_kernel_2d * v[i]
 
         gps_image[dflat, dflong] += v
-
     return gps_image
 
 
 """
 -------------------------------------分割线-------------------------------------
 """
-
 
 def _direct_render(patchedGPS, length=1024):
     """直接渲染GPS点"""
@@ -307,7 +301,7 @@ def _time_quantity_speed_render(patchedGPS):
 
 if __name__ == "__main__":
     """将孙论文的GPS数据按照时间进行渲染,他的数据集跟我的不太一样"""
-    path = "datasets/dataset_bj_time/GPS/patch"
+    path = "/home/fk/python_code/datasets/dataset_bj_time/GPS/patch"
     file_list = os.listdir(path)
     iterater = tqdm(file_list)
     for file_name in iterater:
@@ -345,28 +339,22 @@ if __name__ == "__main__":
         # # Reshape the image array to remove the single channel dimension
         # image_data = np.squeeze(gps_image_array2)
 
-        # # Create an RGBA image with transparency mask
-        # rgba_data = np.zeros((1024, 1024, 4), dtype=np.uint8)
-        # rgba_data[..., :3] = image_data[..., np.newaxis]
-        # rgba_data[..., 3] = np.where(image_data == 0, 0, 255) #将像素值为0的地方的alpha通道设置为0，其他地方设置为255
-        # save_path = "Datasets/dataset_time/GPS/quantity_patch"
-        # if not os.path.isdir(save_path):
-        #     os.makedirs(save_path)
-        # cv2.imwrite(os.path.join(save_path, f"{file_name[:-8]}_gps.png"), rgba_data)
-
-        #只渲染速度信息
-        gps_image_array2 = _speed_render(patchedGPS)
-        save_path = "datasets/dataset_bj_time/GPS/speed_patch"
-        if not os.path.isdir(save_path):
-            os.makedirs(save_path)
-        cv2.imwrite(os.path.join(save_path, f"{file_name[:-8]}_gps.png"), gps_image_array2)
-
-        # #渲染时间和数量信息
-        # gps_image_array2 = _time_quantity_render(patchedGPS)
-        # save_path = "Datasets/dataset_time/GPS/time_quantity_patch"
-        # if not os.path.isdir(save_path):
-        #     os.makedirs(save_path)
+        # #只渲染速度信息
+        # gps_image_array2 = _speed_render(patchedGPS)
+        # save_path = "datasets/dataset_bj_time/GPS/speed_patch"
+        # os.makedirs(save_path, exist_ok=True)
         # cv2.imwrite(os.path.join(save_path, f"{file_name[:-8]}_gps.png"), gps_image_array2)
 
+        #渲染时间和数量信息 + gaussian kernel
+        gps_image_array2 = _time_quantity_render(patchedGPS)
+        save_path = "/home/fk/python_code/datasets/dataset_bj_time/GPS/time_quantity_gaussian_patch"
+        os.makedirs(save_path, exist_ok=True)
+        cv2.imwrite(os.path.join(save_path, f"{file_name[:-8]}_gps.png"), gps_image_array2)
+
+        # #渲染时间、数量和速度信息
+        # gps_image_array2 = _time_quantity_speed_render(patchedGPS)
+        # save_path = "/home/fk/python_code/datasets/dataset_bj_time/GPS/time_quantity_speed_patch"
+        # os.makedirs(save_path, exist_ok=True)
+        # cv2.imwrite(os.path.join(save_path, f"{file_name[:-8]}_gps.png"), gps_image_array2)
 
     print("Done!")

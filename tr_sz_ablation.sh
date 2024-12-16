@@ -1,4 +1,4 @@
-# Train Beijing dataset
+# Train Shenzhen dataset
 # shell命令中只能用#注释
 
 weight_save_dir=(
@@ -7,12 +7,7 @@ weight_save_dir=(
     # "./weights_bj_sdf_v4"
 )
 models=(
-    # "unet"
-    # "resunet"
-    # "deeplabv3+"
-    # "linknet"
     "dlink34_1d"
-    # "dlink34"
 )
 delta=(
     # 0
